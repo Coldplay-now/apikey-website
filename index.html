@@ -1,65 +1,85 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>apikey — 本地 API Key 管理工具</title>
-  <meta name="description" content="macOS 原生 API Key 管理工具，专注分类、查找、引用，让 API Key 对 AI Agent 可发现、可使用。">
+  <title>apikey — The API Key Manager for the AI Era</title>
+  <meta name="description" content="The essential API key manager for AI developers. Securely manage OpenAI, Anthropic, DeepSeek and 30+ provider keys locally on macOS. Keychain encryption, zero uploads.">
   <link rel="icon" href="assets/app-icon.png" type="image/png">
   <style>
     :root {
-      --bg: #0a0a0f;
-      --surface: #13131a;
-      --card: #1a1a24;
-      --border: #2a2a3a;
-      --text: #e8e8ed;
-      --text-muted: #8888a0;
-      --accent: #6366f1;
-      --accent-light: #818cf8;
-      --accent-glow: rgba(99, 102, 241, 0.15);
-      --green: #22c55e;
-      --radius: 16px;
+      --bg: #0d0d0d;
+      --surface: #141210;
+      --card: rgba(255,255,255,0.03);
+      --card-hover: rgba(255,255,255,0.06);
+      --border: rgba(255,255,255,0.08);
+      --border-subtle: rgba(255,255,255,0.05);
+      --text: #f0f0f0;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --orange: #f97316;
+      --amber: #fbbf24;
+      --coral: #fb7185;
+      --emerald: #34d399;
+      --gradient: linear-gradient(135deg, #f97316, #fb7185);
+      --gradient-subtle: linear-gradient(135deg, rgba(249,115,22,0.15), rgba(251,113,133,0.15));
+      --glow-orange: rgba(249,115,22,0.12);
+      --glow-coral: rgba(251,113,133,0.08);
+      --radius: 20px;
+      --radius-sm: 12px;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
+    /* ── Language toggle ── */
+    html:not([lang="zh"]) [data-lang="zh"] { display: none; }
+    html[lang="zh"] [data-lang="en"] { display: none; }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', sans-serif;
       background: var(--bg);
       color: var(--text);
-      line-height: 1.6;
+      line-height: 1.7;
       overflow-x: hidden;
     }
 
-    /* Background glow */
-    body::before {
-      content: '';
+    /* Ambient glow */
+    .glow-top {
       position: fixed;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: radial-gradient(circle at 50% 30%, var(--accent-glow) 0%, transparent 50%);
+      top: -300px;
+      left: -200px;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, var(--glow-orange), transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-bottom {
+      position: fixed;
+      bottom: -400px;
+      right: -200px;
+      width: 900px;
+      height: 900px;
+      background: radial-gradient(circle, var(--glow-coral), transparent 70%);
       pointer-events: none;
       z-index: 0;
     }
 
     .container {
-      max-width: 960px;
+      max-width: 1080px;
       margin: 0 auto;
-      padding: 0 24px;
+      padding: 0 32px;
       position: relative;
       z-index: 1;
     }
 
-    /* Nav */
+    /* ── Nav ── */
     nav {
-      padding: 20px 0;
+      padding: 24px 0;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-
     .nav-brand {
       display: flex;
       align-items: center;
@@ -67,40 +87,77 @@
       text-decoration: none;
       color: var(--text);
     }
-
     .nav-brand img {
       width: 36px;
       height: 36px;
-      border-radius: 8px;
+      border-radius: 10px;
     }
-
     .nav-brand span {
       font-size: 20px;
       font-weight: 700;
       letter-spacing: -0.5px;
     }
-
     .nav-links {
       display: flex;
-      gap: 24px;
+      gap: 20px;
+      align-items: center;
     }
-
     .nav-links a {
-      color: var(--text-muted);
+      color: var(--text-secondary);
       text-decoration: none;
       font-size: 14px;
       font-weight: 500;
       transition: color 0.2s;
     }
-
     .nav-links a:hover { color: var(--text); }
-
-    /* Hero */
-    .hero {
-      text-align: center;
-      padding: 80px 0 60px;
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: var(--radius-sm);
+      background: var(--gradient);
+      color: white;
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      box-shadow: 0 2px 12px rgba(249,115,22,0.25);
+    }
+    .nav-btn:hover {
+      box-shadow: 0 4px 20px rgba(249,115,22,0.4);
+      transform: translateY(-1px);
+    }
+    .lang-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 14px;
+      border-radius: 100px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      backdrop-filter: blur(12px);
+      user-select: none;
+    }
+    .lang-toggle:hover {
+      border-color: var(--orange);
+      color: var(--text);
+      background: var(--card-hover);
+    }
+    .lang-toggle .lang-active {
+      color: var(--orange);
     }
 
+    /* ── Hero ── */
+    .hero {
+      text-align: center;
+      padding: 100px 0 60px;
+    }
     .hero-badge {
       display: inline-flex;
       align-items: center;
@@ -108,432 +165,873 @@
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 100px;
-      padding: 6px 16px;
+      padding: 6px 18px;
       font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 32px;
+      color: var(--text-secondary);
+      margin-bottom: 36px;
+      backdrop-filter: blur(12px);
     }
-
     .hero-badge .dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: var(--green);
+      background: var(--emerald);
+      box-shadow: 0 0 8px var(--emerald);
     }
-
     .hero h1 {
-      font-size: 56px;
+      font-size: 64px;
       font-weight: 800;
-      letter-spacing: -2px;
-      line-height: 1.1;
-      margin-bottom: 20px;
-      background: linear-gradient(135deg, var(--text) 0%, var(--text-muted) 100%);
+      letter-spacing: -3px;
+      line-height: 1.05;
+      margin-bottom: 24px;
+    }
+    .hero h1 .gradient-text {
+      background: var(--gradient);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-
-    .hero p {
-      font-size: 18px;
-      color: var(--text-muted);
-      max-width: 560px;
-      margin: 0 auto 40px;
+    .hero .subtitle {
+      font-size: 20px;
+      color: var(--text-secondary);
+      max-width: 580px;
+      margin: 0 auto 44px;
       line-height: 1.7;
     }
-
     .hero-actions {
       display: flex;
       gap: 16px;
       justify-content: center;
       flex-wrap: wrap;
     }
-
     .btn {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 14px 28px;
-      border-radius: 12px;
-      font-size: 15px;
-      font-weight: 600;
+      gap: 10px;
+      padding: 16px 32px;
+      border-radius: 16px;
+      font-size: 16px;
+      font-weight: 700;
       text-decoration: none;
-      transition: all 0.2s;
+      transition: all 0.25s;
+      cursor: pointer;
     }
-
     .btn-primary {
-      background: var(--accent);
+      background: var(--gradient);
       color: white;
-      box-shadow: 0 4px 24px rgba(99, 102, 241, 0.3);
+      box-shadow: 0 6px 32px rgba(249,115,22,0.3);
     }
-
     .btn-primary:hover {
-      background: var(--accent-light);
-      box-shadow: 0 4px 32px rgba(99, 102, 241, 0.45);
-      transform: translateY(-1px);
+      box-shadow: 0 8px 40px rgba(249,115,22,0.5);
+      transform: translateY(-2px);
     }
-
-    .btn-secondary {
+    .btn-ghost {
       background: var(--card);
       color: var(--text);
       border: 1px solid var(--border);
+      backdrop-filter: blur(12px);
     }
-
-    .btn-secondary:hover {
-      background: var(--border);
-      transform: translateY(-1px);
+    .btn-ghost:hover {
+      background: var(--card-hover);
+      border-color: rgba(255,255,255,0.12);
+      transform: translateY(-2px);
     }
-
     .btn svg {
       width: 18px;
       height: 18px;
     }
-
     .hero-meta {
-      margin-top: 20px;
+      margin-top: 24px;
       font-size: 13px;
       color: var(--text-muted);
     }
 
-    .hero-meta code {
-      background: var(--card);
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-family: 'SF Mono', Monaco, monospace;
-      font-size: 12px;
+    /* ── Screenshot showcase ── */
+    .showcase {
+      padding: 40px 0 100px;
     }
-
-    /* Screenshot */
-    .screenshot {
-      text-align: center;
-      padding: 40px 0 80px;
+    .showcase-hero {
+      margin-bottom: 24px;
     }
-
-    .screenshot img {
-      max-width: 100%;
+    .showcase-hero img {
+      width: 100%;
       border-radius: var(--radius);
       border: 1px solid var(--border);
-      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .showcase-hero img:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 32px 100px rgba(0,0,0,0.7), 0 0 60px var(--glow-orange);
+    }
+    .showcase-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .showcase-grid .showcase-item {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .showcase-grid .showcase-item:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 40px var(--glow-orange);
+    }
+    .showcase-grid .showcase-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .showcase-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 16px 20px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.85));
+      font-size: 13px;
+      font-weight: 600;
+      color: white;
+    }
+    .showcase-caption span {
+      display: block;
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--text-secondary);
+      margin-top: 2px;
     }
 
-    /* Features */
-    .features {
-      padding: 80px 0;
-    }
-
-    .features h2 {
-      text-align: center;
-      font-size: 36px;
+    /* ── Section headers ── */
+    .section-label {
+      font-size: 11px;
       font-weight: 700;
-      letter-spacing: -1px;
-      margin-bottom: 48px;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      color: var(--orange);
+      text-align: center;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      text-align: center;
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -2px;
+      margin-bottom: 16px;
+    }
+    .section-desc {
+      text-align: center;
+      font-size: 17px;
+      color: var(--text-secondary);
+      max-width: 560px;
+      margin: 0 auto 56px;
     }
 
+    /* ── Features grid ── */
+    .features { padding: 100px 0; }
     .features-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 20px;
     }
-
     .feature-card {
       background: var(--card);
-      border: 1px solid var(--border);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius);
-      padding: 28px;
-      transition: all 0.2s;
+      padding: 32px 28px;
+      transition: all 0.3s;
+      backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
     }
-
+    .feature-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gradient);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
     .feature-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
+      border-color: rgba(249,115,22,0.2);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.3), 0 0 32px var(--glow-orange);
     }
-
+    .feature-card:hover::before { opacity: 1; }
     .feature-icon {
-      font-size: 28px;
-      margin-bottom: 16px;
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: var(--gradient-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 20px;
     }
-
     .feature-card h3 {
-      font-size: 16px;
-      font-weight: 600;
-      margin-bottom: 8px;
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      letter-spacing: -0.3px;
     }
-
     .feature-card p {
       font-size: 14px;
-      color: var(--text-muted);
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ── Security section ── */
+    .security { padding: 100px 0; }
+    .security-visual {
+      margin-bottom: 48px;
+      display: flex;
+      justify-content: center;
+    }
+    .security-visual img {
+      max-width: 520px;
+      width: 100%;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5), 0 0 60px var(--glow-orange);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .security-visual img:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 32px 100px rgba(0,0,0,0.6), 0 0 80px var(--glow-orange);
+    }
+    .security-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .security-card {
+      background: var(--card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: 36px 28px;
+      text-align: center;
+      transition: all 0.3s;
+      backdrop-filter: blur(12px);
+    }
+    .security-card:hover {
+      border-color: rgba(249,115,22,0.15);
+      transform: translateY(-2px);
+    }
+    .security-icon {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+    .security-card h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .security-card p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ── Providers ── */
+    .providers { padding: 100px 0; }
+    .provider-logos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .provider-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 100px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      transition: all 0.2s;
+    }
+    .provider-tag:hover {
+      border-color: var(--orange);
+      color: var(--text);
+      background: var(--card-hover);
+    }
+
+    /* ── Comparison ── */
+    .comparison { padding: 100px 0; }
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    .comparison-table th,
+    .comparison-table td {
+      padding: 14px 16px;
+      text-align: center;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .comparison-table th {
+      font-weight: 700;
+      color: var(--text);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .comparison-table th:first-child,
+    .comparison-table td:first-child {
+      text-align: left;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .comparison-table td { color: var(--text-secondary); }
+    .comparison-table .highlight {
+      background: rgba(249,115,22,0.06);
+    }
+    .comparison-table .highlight td {
+      color: var(--text);
+      font-weight: 600;
+    }
+    .check { color: var(--emerald); }
+    .cross { color: var(--text-muted); }
+    .comparison-wrapper {
+      background: var(--card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      overflow: hidden;
+      backdrop-filter: blur(12px);
+    }
+
+    /* ── How it works ── */
+    .how-it-works { padding: 100px 0; }
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .step {
+      text-align: center;
+      position: relative;
+    }
+    .step-number {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--gradient);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 800;
+      color: white;
+      margin: 0 auto 16px;
+      box-shadow: 0 4px 20px rgba(249,115,22,0.3);
+    }
+    .step h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .step p {
+      font-size: 13px;
+      color: var(--text-secondary);
       line-height: 1.6;
     }
 
-    /* Tech */
-    .tech {
-      padding: 80px 0;
-    }
-
-    .tech h2 {
-      text-align: center;
-      font-size: 36px;
-      font-weight: 700;
-      letter-spacing: -1px;
-      margin-bottom: 48px;
-    }
-
-    .tech-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 16px;
-      max-width: 640px;
-      margin: 0 auto;
-    }
-
-    .tech-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px 20px;
-      font-size: 14px;
-    }
-
-    .tech-item .label {
-      color: var(--text-muted);
-      min-width: 72px;
-    }
-
-    .tech-item .value {
-      font-weight: 600;
-    }
-
-    /* CLI */
-    .cli-section {
-      padding: 80px 0;
-    }
-
-    .cli-section h2 {
-      text-align: center;
-      font-size: 36px;
-      font-weight: 700;
-      letter-spacing: -1px;
-      margin-bottom: 16px;
-    }
-
-    .cli-section > p {
-      text-align: center;
-      color: var(--text-muted);
-      margin-bottom: 40px;
-      font-size: 16px;
-    }
-
-    .cli-block {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 28px;
-      max-width: 640px;
-      margin: 0 auto;
-    }
-
-    .cli-block pre {
-      font-family: 'SF Mono', Monaco, 'Cascadia Code', monospace;
-      font-size: 13px;
-      line-height: 1.8;
-      color: var(--text-muted);
-      overflow-x: auto;
-    }
-
-    .cli-block pre .cmd {
-      color: var(--accent-light);
-    }
-
-    .cli-block pre .comment {
-      color: #555;
-    }
-
-    /* CTA */
+    /* ── CTA ── */
     .cta {
       text-align: center;
       padding: 80px 0 120px;
     }
-
+    .cta-card {
+      background: var(--gradient-subtle);
+      border: 1px solid rgba(249,115,22,0.2);
+      border-radius: 28px;
+      padding: 64px 48px;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-card::before {
+      content: '';
+      position: absolute;
+      top: -100px; right: -100px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, var(--glow-orange), transparent 70%);
+      pointer-events: none;
+    }
     .cta h2 {
-      font-size: 36px;
-      font-weight: 700;
-      letter-spacing: -1px;
+      font-size: 40px;
+      font-weight: 800;
+      letter-spacing: -2px;
       margin-bottom: 16px;
+      position: relative;
     }
-
     .cta p {
-      color: var(--text-muted);
-      margin-bottom: 32px;
-      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 36px;
+      font-size: 17px;
+      position: relative;
     }
 
-    /* Footer */
+    /* ── Footer ── */
     footer {
-      border-top: 1px solid var(--border);
-      padding: 32px 0;
+      border-top: 1px solid var(--border-subtle);
+      padding: 40px 0;
       text-align: center;
       color: var(--text-muted);
       font-size: 13px;
     }
-
     footer a {
-      color: var(--accent-light);
+      color: var(--orange);
       text-decoration: none;
     }
-
     footer a:hover { text-decoration: underline; }
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      margin-bottom: 16px;
+    }
+    .footer-links a {
+      color: var(--text-secondary);
+      font-size: 13px;
+    }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-      .hero h1 { font-size: 36px; }
-      .features-grid { grid-template-columns: 1fr; }
-      .tech-grid { grid-template-columns: 1fr; }
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .features-grid, .security-grid { grid-template-columns: 1fr 1fr; }
+      .steps { grid-template-columns: 1fr 1fr; }
+      .showcase-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 40px; letter-spacing: -2px; }
+      .hero .subtitle { font-size: 17px; }
+      .features-grid, .security-grid { grid-template-columns: 1fr; }
+      .steps { grid-template-columns: 1fr; }
       .hero-actions { flex-direction: column; align-items: center; }
-      .nav-links { display: none; }
+      .nav-links .nav-link-text { display: none; }
+      .section-title { font-size: 32px; }
+      .showcase-grid { grid-template-columns: 1fr; }
+      .comparison-table { font-size: 12px; }
+      .comparison-table th, .comparison-table td { padding: 10px 8px; }
     }
   </style>
 </head>
 <body>
 
+<div class="glow-top"></div>
+<div class="glow-bottom"></div>
+
 <div class="container">
+
+  <!-- Nav -->
   <nav>
     <a href="/" class="nav-brand">
-      <img src="assets/app-icon.png" alt="apikey icon">
+      <img src="assets/app-icon.png" alt="apikey">
       <span>apikey</span>
     </a>
     <div class="nav-links">
-      <a href="#features">功能</a>
-      <a href="#cli">CLI</a>
-      <a href="#tech">技术栈</a>
+      <a href="#features" class="nav-link-text">
+        <span data-lang="en">Features</span><span data-lang="zh">功能</span>
+      </a>
+      <a href="#security" class="nav-link-text">
+        <span data-lang="en">Security</span><span data-lang="zh">安全</span>
+      </a>
+      <a href="#comparison" class="nav-link-text">
+        <span data-lang="en">Compare</span><span data-lang="zh">对比</span>
+      </a>
+      <button class="lang-toggle" id="langToggle" onclick="toggleLang()">
+        <span id="langLabel">EN / 中</span>
+      </button>
+      <a href="downloads/apikey-v0.1.1.dmg" class="nav-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download
+      </a>
     </div>
   </nav>
 
+  <!-- Hero -->
   <section class="hero">
     <div class="hero-badge">
       <span class="dot"></span>
-      <span>v0.1.1 — 已公证 (Notarized)</span>
+      v0.1.1 — Apple Notarized
     </div>
-    <h1>本地 API Key<br>管理工具</h1>
-    <p>macOS 原生 App + 跨平台 CLI，专注于分类、查找、引用，让 API Key 对 AI Agent 可发现、可使用。</p>
+    <h1>
+      <span data-lang="en">Your API Keys.<br><span class="gradient-text">Your Mac. Period.</span><br><span class="gradient-text" style="font-size:0.6em; letter-spacing:-1px;">Your Dev. Faster. Your Agent Partner.</span></span>
+      <span data-lang="zh">你的 API Keys.<br><span class="gradient-text">你的 Mac. 就这样.</span><br><span class="gradient-text" style="font-size:0.6em; letter-spacing:-1px;">更快开发. 你的 Agent 搭档.</span></span>
+    </h1>
+    <p class="subtitle">
+      <span data-lang="en">The essential API key manager for the AI era. One vault for OpenAI, Anthropic, DeepSeek and 30+ providers. Keychain-encrypted, zero uploads, ⌘⇧K instant access.</span>
+      <span data-lang="zh">AI 时代的 API Key 效率工具。一个保险箱管理 OpenAI、Anthropic、DeepSeek 等 30+ 供应商密钥。Keychain 加密，零上传，⌘⇧K 即时调用。</span>
+    </p>
     <div class="hero-actions">
       <a href="downloads/apikey-v0.1.1.dmg" class="btn btn-primary">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        下载 DMG v0.1.1
+        <span data-lang="en">Download for macOS</span><span data-lang="zh">下载 macOS 版</span>
       </a>
     </div>
     <div class="hero-meta">
-      macOS 15.4+ &nbsp;·&nbsp; Universal (Apple Silicon + Intel) &nbsp;·&nbsp;
-      SHA-256: <code>becc6c35…e1f2f0d</code>
+      macOS 15.4+ &nbsp;·&nbsp; Apple Silicon + Intel &nbsp;·&nbsp; Free
     </div>
   </section>
 
-  <section class="screenshot">
-    <img src="assets/screenshot.jpeg" alt="apikey App 截图">
+  <!-- Screenshots -->
+  <section class="showcase">
+    <div class="showcase-hero">
+      <img src="assets/截屏2026-02-08 22.29.57.png" alt="apikey dashboard — three-column layout with sidebar, key list, and detail panel">
+    </div>
+    <div class="showcase-grid">
+      <div class="showcase-item">
+        <img src="assets/20260208-223108.jpg" alt="8 key type selection">
+        <div class="showcase-caption">
+          <span data-lang="en">Type Selection</span><span data-lang="zh">类型选择</span>
+          <span><span data-lang="en">8 key types at a glance</span><span data-lang="zh">8 种密钥类型，一目了然</span></span>
+        </div>
+      </div>
+      <div class="showcase-item">
+        <img src="assets/20260208-223112.jpg" alt="floating label form">
+        <div class="showcase-caption">
+          <span data-lang="en">Smart Form</span><span data-lang="zh">智能表单</span>
+          <span><span data-lang="en">Floating labels + type-specific fields</span><span data-lang="zh">浮动标签 + 类型专属字段</span></span>
+        </div>
+      </div>
+      <div class="showcase-item">
+        <img src="assets/20260208-223101.jpg" alt="menu bar quick access">
+        <div class="showcase-caption">
+          <span data-lang="en">Menu Bar</span><span data-lang="zh">菜单栏</span>
+          <span><span data-lang="en">One-click copy from menu bar</span><span data-lang="zh">菜单栏一键复制</span></span>
+        </div>
+      </div>
+    </div>
   </section>
 
+  <!-- Features -->
   <section class="features" id="features">
-    <h2>功能特性</h2>
+    <div class="section-label">Features</div>
+    <h2 class="section-title">
+      <span data-lang="en">One tool for all your keys</span>
+      <span data-lang="zh">一个工具，管理所有密钥</span>
+    </h2>
+    <p class="section-desc">
+      <span data-lang="en">8 key types, 30+ providers, paste to categorize, ⌘⇧K to copy.</span>
+      <span data-lang="zh">8 种密钥类型，30+ 预置供应商，粘贴即归类，⌘⇧K 即复制。</span>
+    </p>
+
     <div class="features-grid">
       <div class="feature-card">
         <div class="feature-icon">🔑</div>
-        <h3>8 种密钥类型</h3>
-        <p>LLM、代码托管 PAT、SaaS、SSH、邮件、云服务、支付、通用</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🔒</div>
-        <h3>Keychain 安全存储</h3>
-        <p>自动选择 Data Protection Keychain，开发环境自动降级</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📋</div>
-        <h3>三栏布局</h3>
-        <p>侧边栏分组 → 密钥列表 → 详情，清晰高效</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">🔍</div>
-        <h3>全局搜索</h3>
-        <p>Spotlight 风格快速查找（⌘⇧K），即搜即用</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">📌</div>
-        <h3>菜单栏托盘</h3>
-        <p>快速复制、锁定/解锁、剪贴板自动清除</p>
+        <h3><span data-lang="en">8 Key Types</span><span data-lang="zh">8 种密钥类型</span></h3>
+        <p><span data-lang="en">LLM, Code PAT, SaaS, SSH, Email SMTP, Cloud, Payment, Generic — covering all developer credential scenarios.</span><span data-lang="zh">LLM、代码托管 PAT、SaaS、SSH、邮件 SMTP、云服务、支付、通用——覆盖开发者日常所有凭证场景。</span></p>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🤖</div>
-        <h3>Agent 文档生成</h3>
-        <p>输出 Cursor Skills / Claude 可读的密钥使用文档</p>
+        <h3><span data-lang="en">30+ Built-in Providers</span><span data-lang="zh">30+ 预置供应商</span></h3>
+        <p><span data-lang="en">OpenAI, Anthropic, GitHub, AWS, Stripe and more out of the box. Select a provider to auto-fill ENV variable names and endpoint URLs.</span><span data-lang="zh">OpenAI、Anthropic、GitHub、AWS、Stripe 等开箱即用。选择供应商自动填充 ENV 变量名和端点 URL。</span></p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3><span data-lang="en">Global Hotkey Search</span><span data-lang="zh">全局快捷键搜索</span></h3>
+        <p><span data-lang="en">Press ⌘⇧K in any app to instantly search and copy keys. Get your key in 0.5s while coding — stay in flow.</span><span data-lang="zh">按 ⌘⇧K 在任何应用中即时搜索并复制密钥。写代码时 0.5 秒拿到 Key，心流不中断。</span></p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔍</div>
+        <h3><span data-lang="en">Smart Auto-Detection</span><span data-lang="zh">智能自动识别</span></h3>
+        <p><span data-lang="en">Paste a key to auto-match its provider (sk- → OpenAI). Auto-detect type, fill defaults. Zero effort.</span><span data-lang="zh">粘贴密钥自动匹配供应商（sk-→OpenAI），自动推断类型、填充默认配置。零操作成本。</span></p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏥</div>
+        <h3><span data-lang="en">Key Health Check</span><span data-lang="zh">密钥健康检查</span></h3>
+        <p><span data-lang="en">Auto-verify if keys are valid with API checks for 15+ providers. Spot expired keys at a glance — no more production surprises.</span><span data-lang="zh">自动验证 Key 是否有效，支持 15+ 供应商的 API 校验。过期的 Key 一眼看到，不用等线上报错。</span></p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📁</div>
+        <h3><span data-lang="en">Import & Export</span><span data-lang="zh">灵活导入导出</span></h3>
+        <p><span data-lang="en">Batch import from .env files with auto-detection and preview. Export to .env or JSON — one-click project migration.</span><span data-lang="zh">.env 文件批量导入，自动识别供应商并预览。导出为 .env 或 JSON，项目迁移一键完成。</span></p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📌</div>
+        <h3><span data-lang="en">Menu Bar Access</span><span data-lang="zh">菜单栏快速访问</span></h3>
+        <p><span data-lang="en">No need to open the main window — copy recently used keys from the menu bar tray. One-click lock/unlock, clipboard countdown visualization.</span><span data-lang="zh">不用打开主窗口——菜单栏托盘快速复制最近使用的 Key，一键锁定 / 解锁，剪贴板倒计时可视化。</span></p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌐</div>
+        <h3><span data-lang="en">Bilingual Interface</span><span data-lang="zh">中英双语界面</span></h3>
+        <p><span data-lang="en">Language follows system or manual switch. International teams work seamlessly.</span><span data-lang="zh">界面语言跟随系统或手动切换，国际团队无障碍使用。</span></p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎨</div>
+        <h3><span data-lang="en">Sunset Orange Dark Theme</span><span data-lang="zh">Sunset Orange 暗色主题</span></h3>
+        <p><span data-lang="en">An immersive dark interface — glassmorphism cards, gradient icons, hover animations, press feedback.</span><span data-lang="zh">专为深色模式优化的沉浸式界面——毛玻璃卡片、渐变色图标、悬浮动效、按压反馈。</span></p>
       </div>
     </div>
   </section>
 
-  <section class="cli-section" id="cli">
-    <h2>命令行工具</h2>
-    <p>除 GUI 外还提供跨平台 CLI，脚本集成零摩擦</p>
-    <div class="cli-block">
-      <pre><span class="comment"># 添加 Key</span>
-<span class="cmd">apikey add</span> --provider openai --key sk-xxx --name "OpenAI Dev"
+  <!-- Security -->
+  <section class="security" id="security">
+    <div class="section-label">Security</div>
+    <h2 class="section-title">
+      <span data-lang="en">Your keys are as safe as your banking password</span>
+      <span data-lang="zh">你的 Key 和银行密码一样安全</span>
+    </h2>
+    <p class="section-desc">
+      <span data-lang="en">Keys are stored in macOS Keychain — never in plain text, never uploaded to any server.</span>
+      <span data-lang="zh">密钥存储在 macOS 钥匙串中，永不明文落盘，永不上传任何服务器。</span>
+    </p>
 
-<span class="comment"># 查询</span>
-<span class="cmd">apikey get</span> openai
-<span class="cmd">apikey list</span>
-<span class="cmd">apikey search</span> gpt
-
-<span class="comment"># 导入导出</span>
-<span class="cmd">apikey import</span> .env
-<span class="cmd">apikey export</span> --format env --output .env
-
-<span class="comment"># 生成 Agent 文档</span>
-<span class="cmd">apikey skills</span> --format cursor</pre>
+    <div class="security-visual">
+      <img src="assets/截屏2026-02-08 22.37.25.png" alt="apikey locked state — Key values cleared from memory">
     </div>
-  </section>
 
-  <section class="tech" id="tech">
-    <h2>技术栈</h2>
-    <div class="tech-grid">
-      <div class="tech-item">
-        <span class="label">GUI</span>
-        <span class="value">SwiftUI (macOS 14+)</span>
+    <div class="security-grid">
+      <div class="security-card">
+        <div class="security-icon">🔐</div>
+        <h3><span data-lang="en">Keychain Encryption</span><span data-lang="zh">Keychain 加密存储</span></h3>
+        <p><span data-lang="en">Key values are encrypted via macOS Keychain, with the same protection as system passwords and Touch ID. Metadata is stored separately in local SQLite.</span><span data-lang="zh">密钥值通过 macOS Keychain 加密，与系统密码、Touch ID 同级保护。元数据单独存储在本地 SQLite。</span></p>
       </div>
-      <div class="tech-item">
-        <span class="label">核心逻辑</span>
-        <span class="value">Swift</span>
+      <div class="security-card">
+        <div class="security-icon">🚫</div>
+        <h3><span data-lang="en">Zero Network · Zero Upload</span><span data-lang="zh">零网络 · 零上传</span></h3>
+        <p><span data-lang="en">A purely local app with no network capabilities whatsoever. No servers, no accounts, no telemetry. Nobody can steal your keys remotely — not even us.</span><span data-lang="zh">纯本地应用，不包含任何网络通信功能。无服务器、无账号、无遥测。没有人能远程窃取你的密钥——包括我们自己。</span></p>
       </div>
-      <div class="tech-item">
-        <span class="label">数据库</span>
-        <span class="value">SQLite (GRDB.swift)</span>
-      </div>
-      <div class="tech-item">
-        <span class="label">密钥存储</span>
-        <span class="value">macOS Keychain</span>
-      </div>
-      <div class="tech-item">
-        <span class="label">CLI 框架</span>
-        <span class="value">Swift Argument Parser</span>
-      </div>
-      <div class="tech-item">
-        <span class="label">包管理</span>
-        <span class="value">Swift Package Manager</span>
+      <div class="security-card">
+        <div class="security-icon">🧹</div>
+        <h3><span data-lang="en">Auto-Clear</span><span data-lang="zh">自动清除机制</span></h3>
+        <p><span data-lang="en">Clipboard auto-clears in 15–120 seconds. Auto-lock in 1–30 minutes (configurable). All in-memory cache is wiped on lock.</span><span data-lang="zh">剪贴板 15~120 秒定时清除。自动锁定（1~30 分钟可配置）。锁定时内存缓存全部清空。</span></p>
       </div>
     </div>
   </section>
 
+  <!-- Providers -->
+  <section class="providers">
+    <div class="section-label">Providers</div>
+    <h2 class="section-title">
+      <span data-lang="en">30+ providers, ready to go</span>
+      <span data-lang="zh">30+ 供应商，开箱即用</span>
+    </h2>
+    <p class="section-desc">
+      <span data-lang="en">Pre-configured providers let you add a key in just 10 seconds — custom services are also supported.</span>
+      <span data-lang="zh">预配置的供应商让你添加 Key 只需 10 秒——也支持自定义任何服务。</span>
+    </p>
+
+    <div class="provider-logos">
+      <span class="provider-tag">OpenAI</span>
+      <span class="provider-tag">Anthropic</span>
+      <span class="provider-tag">Google Gemini</span>
+      <span class="provider-tag">DeepSeek</span>
+      <span class="provider-tag">Groq</span>
+      <span class="provider-tag">xAI</span>
+      <span class="provider-tag">GitHub</span>
+      <span class="provider-tag">GitLab</span>
+      <span class="provider-tag">Vercel</span>
+      <span class="provider-tag">Netlify</span>
+      <span class="provider-tag">Supabase</span>
+      <span class="provider-tag">Cloudflare</span>
+      <span class="provider-tag">AWS</span>
+      <span class="provider-tag">Google Cloud</span>
+      <span class="provider-tag">Azure</span>
+      <span class="provider-tag">Alibaba Cloud</span>
+      <span class="provider-tag">Stripe</span>
+      <span class="provider-tag">SendGrid</span>
+      <span class="provider-tag">Resend</span>
+      <span class="provider-tag">Notion</span>
+      <span class="provider-tag">Slack</span>
+      <span class="provider-tag">Airtable</span>
+      <span class="provider-tag">NVIDIA</span>
+      <span class="provider-tag">OpenRouter</span>
+      <span class="provider-tag">+ Custom</span>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="how-it-works">
+    <div class="section-label">Workflow</div>
+    <h2 class="section-title">
+      <span data-lang="en">From scattered to secure in 4 steps</span>
+      <span data-lang="zh">从散乱到安全，只需 4 步</span>
+    </h2>
+    <p class="section-desc">
+      <span data-lang="en">Say goodbye to keys in .env files, notes, and chat histories.</span>
+      <span data-lang="zh">告别 .env 文件、备忘录和聊天记录里的密钥。</span>
+    </p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-number">1</div>
+        <h4><span data-lang="en">Select Type</span><span data-lang="zh">选择类型</span></h4>
+        <p><span data-lang="en">Choose from 8 key types, or paste a key for auto-detection</span><span data-lang="zh">从 8 种密钥类型中选择，或粘贴 Key 自动识别</span></p>
+      </div>
+      <div class="step">
+        <div class="step-number">2</div>
+        <h4><span data-lang="en">Secure Storage</span><span data-lang="zh">安全存储</span></h4>
+        <p><span data-lang="en">Keys are automatically encrypted into macOS Keychain</span><span data-lang="zh">密钥自动加密存入 macOS Keychain</span></p>
+      </div>
+      <div class="step">
+        <div class="step-number">3</div>
+        <h4><span data-lang="en">Organize</span><span data-lang="zh">分类管理</span></h4>
+        <p><span data-lang="en">Filter by type and provider, health checks at a glance</span><span data-lang="zh">按类型和供应商筛选，健康检查一目了然</span></p>
+      </div>
+      <div class="step">
+        <div class="step-number">4</div>
+        <h4><span data-lang="en">Use Instantly</span><span data-lang="zh">即时使用</span></h4>
+        <p><span data-lang="en">⌘⇧K to search and copy, clipboard auto-clears</span><span data-lang="zh">⌘⇧K 搜索复制，剪贴板自动清除</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison -->
+  <section class="comparison" id="comparison">
+    <div class="section-label">Compare</div>
+    <h2 class="section-title">
+      <span data-lang="en">Why apikey?</span>
+      <span data-lang="zh">为什么选 apikey？</span>
+    </h2>
+    <p class="section-desc">
+      <span data-lang="en">Purpose-built for API keys — more secure and more specialized than generic solutions.</span>
+      <span data-lang="zh">专为 API Key 设计，比通用方案更安全、更专业。</span>
+    </p>
+
+    <div class="comparison-wrapper">
+      <table class="comparison-table">
+        <thead>
+          <tr>
+            <th></th>
+            <th style="color: var(--orange);">apikey</th>
+            <th>.env file</th>
+            <th>1Password</th>
+            <th>Vault</th>
+            <th>Doppler</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="highlight">
+            <td><span data-lang="en">Price</span><span data-lang="zh">价格</span></td>
+            <td style="color: var(--emerald);">Free</td>
+            <td>Free</td>
+            <td>$36/yr</td>
+            <td>Enterprise $$</td>
+            <td>$18/mo+</td>
+          </tr>
+          <tr>
+            <td><span data-lang="en">Data Location</span><span data-lang="zh">数据存储</span></td>
+            <td>Local Keychain</td>
+            <td>Plain text</td>
+            <td>Cloud</td>
+            <td>Self-hosted</td>
+            <td>Cloud</td>
+          </tr>
+          <tr>
+            <td><span data-lang="en">Server Required</span><span data-lang="zh">需要服务器</span></td>
+            <td><span class="check">✕ No</span></td>
+            <td><span class="check">✕ No</span></td>
+            <td><span class="check">✕ No</span></td>
+            <td><span class="cross">✓ Yes</span></td>
+            <td><span class="check">✕ No</span></td>
+          </tr>
+          <tr>
+            <td><span data-lang="en">Telemetry</span><span data-lang="zh">遥测数据</span></td>
+            <td><span class="check">Zero</span></td>
+            <td>—</td>
+            <td>Metadata</td>
+            <td>Self-control</td>
+            <td>Usage data</td>
+          </tr>
+          <tr class="highlight">
+            <td><span data-lang="en">API Key Specific</span><span data-lang="zh">API Key 专用</span></td>
+            <td><span class="check">✓ Purpose-built</span></td>
+            <td><span class="cross">✕ Unstructured</span></td>
+            <td><span class="cross">✕ Generic</span></td>
+            <td><span class="cross">⚠ Ops-focused</span></td>
+            <td><span class="check">✓ Team-focused</span></td>
+          </tr>
+          <tr>
+            <td><span data-lang="en">Auto-detect Provider</span><span data-lang="zh">自动识别供应商</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✕</span></td>
+            <td><span class="cross">✕</span></td>
+            <td><span class="cross">✕</span></td>
+            <td><span class="cross">✕</span></td>
+          </tr>
+          <tr>
+            <td><span data-lang="en">Health Check</span><span data-lang="zh">健康检查</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✕</span></td>
+            <td><span class="cross">✕</span></td>
+            <td><span class="cross">✕</span></td>
+            <td><span class="cross">✕</span></td>
+          </tr>
+          <tr>
+            <td><span data-lang="en">Global Hotkey</span><span data-lang="zh">全局快捷键</span></td>
+            <td><span class="check">✓ ⌘⇧K</span></td>
+            <td><span class="cross">✕</span></td>
+            <td><span class="check">✓</span></td>
+            <td><span class="cross">✕</span></td>
+            <td><span class="cross">✕</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- CTA -->
   <section class="cta">
-    <h2>开始使用</h2>
-    <p>下载 DMG 安装即可使用，已通过 Apple 公证</p>
-    <a href="downloads/apikey-v0.1.1.dmg" class="btn btn-primary">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-      下载 apikey v0.1.1
-    </a>
+    <div class="cta-card">
+      <h2>
+        <span data-lang="en">AI needs keys. You need control.<br>apikey gives you both.</span>
+        <span data-lang="zh">AI 需要密钥，你需要掌控。<br>apikey 两者兼得。</span>
+      </h2>
+      <p>
+        <span data-lang="en">30+ AI &amp; cloud providers. Keychain-encrypted. Zero uploads. Your keys never leave your Mac.</span>
+        <span data-lang="zh">30+ AI 和云服务供应商。Keychain 加密。零上传。密钥永远不离开你的 Mac。</span>
+      </p>
+      <a href="downloads/apikey-v0.1.1.dmg" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download apikey v0.1.1
+      </a>
+    </div>
   </section>
+
 </div>
 
 <footer>
   <div class="container">
-    <p>apikey v0.1.1 &copy; 2026 Xiaotian LIU &nbsp;·&nbsp; MIT License</p>
+    <div class="footer-links">
+      <a href="#features"><span data-lang="en">Features</span><span data-lang="zh">功能</span></a>
+      <a href="#security"><span data-lang="en">Security</span><span data-lang="zh">安全</span></a>
+      <a href="#comparison"><span data-lang="en">Compare</span><span data-lang="zh">对比</span></a>
+    </div>
+    <p>apikey v0.1.1 &copy; 2026 Xiaotian LIU &nbsp;·&nbsp; Made with ♥ on macOS</p>
   </div>
 </footer>
+
+<script>
+  function toggleLang() {
+    const html = document.documentElement;
+    const current = html.getAttribute('lang');
+    const next = current === 'zh' ? 'en' : 'zh';
+    html.setAttribute('lang', next);
+    document.getElementById('langLabel').textContent = next === 'en' ? 'EN / 中' : '中 / EN';
+    localStorage.setItem('apikey-lang', next);
+  }
+
+  // Restore saved preference
+  (function() {
+    const saved = localStorage.getItem('apikey-lang');
+    if (saved && saved === 'zh') {
+      document.documentElement.setAttribute('lang', 'zh');
+      document.getElementById('langLabel').textContent = '中 / EN';
+    }
+  })();
+</script>
 
 </body>
 </html>
