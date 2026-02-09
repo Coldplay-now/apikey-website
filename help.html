@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>apikey — Help & User Guide</title>
+  <meta name="description" content="apikey User Guide — Learn how to manage your API keys securely on macOS.">
+  <link rel="icon" href="assets/app-icon.png" type="image/png">
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --card: rgba(255,255,255,0.03);
+      --border: rgba(255,255,255,0.08);
+      --border-subtle: rgba(255,255,255,0.05);
+      --text: #f0f0f0;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --orange: #f97316;
+      --amber: #fbbf24;
+      --emerald: #34d399;
+      --gradient: linear-gradient(135deg, #f97316, #fb7185);
+      --gradient-subtle: linear-gradient(135deg, rgba(249,115,22,0.15), rgba(251,113,133,0.15));
+      --glow-orange: rgba(249,115,22,0.12);
+      --glow-coral: rgba(251,113,133,0.08);
+      --radius: 20px;
+      --radius-sm: 12px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html:not([lang="zh"]) [data-lang="zh"] { display: none; }
+    html[lang="zh"] [data-lang="en"] { display: none; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+      overflow-x: hidden;
+    }
+    .glow-top {
+      position: fixed; top: -300px; left: -200px;
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, var(--glow-orange), transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 32px;
+      position: relative;
+      z-index: 1;
+    }
+    nav {
+      padding: 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; color: var(--text);
+    }
+    .nav-brand img { width: 36px; height: 36px; border-radius: 10px; }
+    .nav-brand span { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-links a {
+      color: var(--text-secondary); text-decoration: none;
+      font-size: 14px; font-weight: 500; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .lang-toggle {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 6px 14px; border-radius: 100px;
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--text-secondary); font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; backdrop-filter: blur(12px);
+      user-select: none;
+    }
+    .lang-toggle:hover { border-color: var(--orange); color: var(--text); }
+
+    .page-header {
+      text-align: center;
+      padding: 80px 0 48px;
+    }
+    .page-header h1 {
+      font-size: 42px; font-weight: 800; letter-spacing: -2px; margin-bottom: 16px;
+    }
+    .page-header h1 .gradient-text {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .page-header p {
+      color: var(--text-secondary); font-size: 17px;
+    }
+
+    .content {
+      padding: 0 0 100px;
+    }
+
+    /* TOC */
+    .toc {
+      background: var(--card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      backdrop-filter: blur(12px);
+      margin-bottom: 32px;
+    }
+    .toc h2 {
+      font-size: 16px; font-weight: 700; margin-bottom: 16px;
+      color: var(--orange);
+    }
+    .toc ol {
+      padding-left: 20px;
+    }
+    .toc li {
+      margin-bottom: 6px;
+    }
+    .toc a {
+      color: var(--text-secondary); text-decoration: none;
+      font-size: 14px; font-weight: 500; transition: color 0.2s;
+    }
+    .toc a:hover { color: var(--orange); }
+
+    .content-card {
+      background: var(--card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: 48px 40px;
+      backdrop-filter: blur(12px);
+      margin-bottom: 24px;
+    }
+    .content-card h2 {
+      font-size: 22px; font-weight: 700; margin-bottom: 20px;
+      letter-spacing: -0.5px;
+    }
+    .content-card h3 {
+      font-size: 17px; font-weight: 700; margin: 24px 0 12px;
+      color: var(--orange);
+    }
+    .content-card p, .content-card li {
+      font-size: 15px; color: var(--text-secondary); line-height: 1.8;
+      margin-bottom: 12px;
+    }
+    .content-card ul, .content-card ol {
+      padding-left: 20px;
+    }
+    .content-card li {
+      margin-bottom: 8px;
+    }
+    .content-card code {
+      background: rgba(249,115,22,0.1);
+      color: var(--amber);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: 'SF Mono', 'Menlo', monospace;
+    }
+    .highlight-box {
+      background: var(--gradient-subtle);
+      border: 1px solid rgba(249,115,22,0.2);
+      border-radius: var(--radius-sm);
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+    .highlight-box p {
+      color: var(--text); font-weight: 600; margin-bottom: 0;
+    }
+    .kbd {
+      display: inline-block;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 6px;
+      padding: 2px 8px;
+      font-size: 13px;
+      font-family: 'SF Mono', 'Menlo', monospace;
+      color: var(--text);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    }
+    .shortcut-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+    .shortcut-table th, .shortcut-table td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 14px;
+    }
+    .shortcut-table th {
+      font-weight: 700; color: var(--text); font-size: 13px;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .shortcut-table td { color: var(--text-secondary); }
+    .shortcut-table td:first-child { color: var(--text); font-weight: 600; }
+
+    .step-list {
+      counter-reset: step;
+      list-style: none;
+      padding-left: 0;
+    }
+    .step-list li {
+      counter-increment: step;
+      position: relative;
+      padding-left: 40px;
+      margin-bottom: 16px;
+    }
+    .step-list li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0; top: 2px;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--gradient);
+      color: white;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(249,115,22,0.25);
+    }
+
+    .meta {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      padding: 24px 0;
+    }
+
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    footer a { color: var(--orange); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .footer-links {
+      display: flex; gap: 24px; justify-content: center; margin-bottom: 16px;
+    }
+    .footer-links a { color: var(--text-secondary); font-size: 13px; }
+
+    @media (max-width: 640px) {
+      .page-header h1 { font-size: 32px; }
+      .content-card { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="glow-top"></div>
+
+<div class="container">
+
+  <nav>
+    <a href="/" class="nav-brand">
+      <img src="assets/app-icon.png" alt="apikey">
+      <span>apikey</span>
+    </a>
+    <div class="nav-links">
+      <a href="/"><span data-lang="en">Home</span><span data-lang="zh">首页</span></a>
+      <a href="privacy.html"><span data-lang="en">Privacy</span><span data-lang="zh">隐私</span></a>
+      <button class="lang-toggle" onclick="toggleLang()">
+        <span id="langLabel">EN / 中</span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <h1>
+      <span data-lang="en"><span class="gradient-text">Help & User Guide</span></span>
+      <span data-lang="zh"><span class="gradient-text">使用帮助</span></span>
+    </h1>
+    <p>
+      <span data-lang="en">Everything you need to get the most out of apikey</span>
+      <span data-lang="zh">帮助你充分利用 apikey 的一切</span>
+    </p>
+  </div>
+
+  <div class="content">
+
+    <!-- TOC -->
+    <div class="toc">
+      <h2><span data-lang="en">Contents</span><span data-lang="zh">目录</span></h2>
+      <ol>
+        <li><a href="#getting-started"><span data-lang="en">Getting Started</span><span data-lang="zh">快速入门</span></a></li>
+        <li><a href="#adding-keys"><span data-lang="en">Adding Keys</span><span data-lang="zh">添加密钥</span></a></li>
+        <li><a href="#key-types"><span data-lang="en">Key Types</span><span data-lang="zh">密钥类型</span></a></li>
+        <li><a href="#search-copy"><span data-lang="en">Searching & Copying</span><span data-lang="zh">搜索与复制</span></a></li>
+        <li><a href="#menu-bar"><span data-lang="en">Menu Bar</span><span data-lang="zh">菜单栏</span></a></li>
+        <li><a href="#import-export"><span data-lang="en">Import & Export</span><span data-lang="zh">导入与导出</span></a></li>
+        <li><a href="#backup"><span data-lang="en">Encrypted Backup & Restore</span><span data-lang="zh">加密备份与恢复</span></a></li>
+        <li><a href="#security"><span data-lang="en">Security & Locking</span><span data-lang="zh">安全与锁定</span></a></li>
+        <li><a href="#settings"><span data-lang="en">Settings</span><span data-lang="zh">设置</span></a></li>
+        <li><a href="#shortcuts"><span data-lang="en">Keyboard Shortcuts</span><span data-lang="zh">快捷键</span></a></li>
+        <li><a href="#faq"><span data-lang="en">FAQ</span><span data-lang="zh">常见问题</span></a></li>
+      </ol>
+    </div>
+
+    <!-- Getting Started -->
+    <div class="content-card" id="getting-started">
+      <h2><span data-lang="en">1. Getting Started</span><span data-lang="zh">1. 快速入门</span></h2>
+      <div class="highlight-box">
+        <p>
+          <span data-lang="en">apikey stores your API keys in the macOS Keychain — the same vault that protects your system passwords and Touch ID. Zero network, zero uploads.</span>
+          <span data-lang="zh">apikey 将 API 密钥存储在 macOS 钥匙串中——与系统密码和 Touch ID 使用同一个安全保险库。零网络，零上传。</span>
+        </p>
+      </div>
+      <ol class="step-list">
+        <li>
+          <span data-lang="en"><strong>Install</strong> — Open the DMG, drag apikey to Applications.</span>
+          <span data-lang="zh"><strong>安装</strong> — 打开 DMG，将 apikey 拖到「应用程序」文件夹。</span>
+        </li>
+        <li>
+          <span data-lang="en"><strong>Launch</strong> — Open apikey. Accept the terms on first launch to enter the main window.</span>
+          <span data-lang="zh"><strong>启动</strong> — 打开 apikey。首次启动时接受使用条款即可进入主界面。</span>
+        </li>
+        <li>
+          <span data-lang="en"><strong>Add your first key</strong> — Click <code>+</code> in the toolbar, select a key type and provider, then paste your key.</span>
+          <span data-lang="zh"><strong>添加第一个密钥</strong> — 点击工具栏的 <code>+</code>，选择密钥类型和供应商，然后粘贴你的密钥。</span>
+        </li>
+        <li>
+          <span data-lang="en"><strong>Use it</strong> — Press <span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">K</span> anywhere to search and copy your key instantly.</span>
+          <span data-lang="zh"><strong>使用</strong> — 在任意应用中按 <span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">K</span> 即可搜索并复制密钥。</span>
+        </li>
+      </ol>
+    </div>
+
+    <!-- Adding Keys -->
+    <div class="content-card" id="adding-keys">
+      <h2><span data-lang="en">2. Adding Keys</span><span data-lang="zh">2. 添加密钥</span></h2>
+      <p>
+        <span data-lang="en">Click the <code>+</code> button in the toolbar to open the Add Key sheet:</span>
+        <span data-lang="zh">点击工具栏中的 <code>+</code> 按钮打开添加密钥面板：</span>
+      </p>
+      <ol class="step-list">
+        <li>
+          <span data-lang="en"><strong>Select key type</strong> — Choose from 8 types (LLM, Code, SaaS, SSH, Email, Cloud, Payment, Generic).</span>
+          <span data-lang="zh"><strong>选择密钥类型</strong> — 从 8 种类型中选择（LLM、代码托管、SaaS、SSH、邮件、云服务、支付、通用）。</span>
+        </li>
+        <li>
+          <span data-lang="en"><strong>Choose provider</strong> — Select from 30+ built-in providers, or create a custom one.</span>
+          <span data-lang="zh"><strong>选择供应商</strong> — 从 30+ 预置供应商中选择，或创建自定义供应商。</span>
+        </li>
+        <li>
+          <span data-lang="en"><strong>Enter name</strong> — Give your key a memorable custom name.</span>
+          <span data-lang="zh"><strong>输入名称</strong> — 为密钥设置一个便于识别的自定义名称。</span>
+        </li>
+        <li>
+          <span data-lang="en"><strong>Paste key value</strong> — Paste your API key. The provider may be auto-detected from the key prefix (e.g., <code>sk-</code> → OpenAI).</span>
+          <span data-lang="zh"><strong>粘贴密钥值</strong> — 粘贴 API 密钥。系统会根据前缀自动识别供应商（如 <code>sk-</code> → OpenAI）。</span>
+        </li>
+      </ol>
+      <h3><span data-lang="en">Auto-Detection</span><span data-lang="zh">自动识别</span></h3>
+      <p>
+        <span data-lang="en">When you paste a key, apikey automatically matches it to the correct provider based on known prefixes. ENV variable names and endpoint URLs are auto-filled.</span>
+        <span data-lang="zh">粘贴密钥时，apikey 会根据已知前缀自动匹配供应商，并自动填充 ENV 变量名和端点 URL。</span>
+      </p>
+    </div>
+
+    <!-- Key Types -->
+    <div class="content-card" id="key-types">
+      <h2><span data-lang="en">3. Key Types</span><span data-lang="zh">3. 密钥类型</span></h2>
+      <p>
+        <span data-lang="en">apikey supports 8 key types to cover all developer credential scenarios:</span>
+        <span data-lang="zh">apikey 支持 8 种密钥类型，覆盖开发者所有凭证场景：</span>
+      </p>
+      <table class="shortcut-table">
+        <thead>
+          <tr>
+            <th><span data-lang="en">Type</span><span data-lang="zh">类型</span></th>
+            <th><span data-lang="en">Use Case</span><span data-lang="zh">用途</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>✨ LLM</td>
+            <td><span data-lang="en">OpenAI, Anthropic, DeepSeek, Gemini, etc.</span><span data-lang="zh">OpenAI、Anthropic、DeepSeek、Gemini 等</span></td>
+          </tr>
+          <tr>
+            <td>&lt;/&gt; Code</td>
+            <td><span data-lang="en">GitHub PAT, GitLab tokens, Bitbucket</span><span data-lang="zh">GitHub PAT、GitLab 令牌、Bitbucket</span></td>
+          </tr>
+          <tr>
+            <td>⊞ SaaS</td>
+            <td><span data-lang="en">Vercel, Netlify, Supabase, Notion, Slack</span><span data-lang="zh">Vercel、Netlify、Supabase、Notion、Slack</span></td>
+          </tr>
+          <tr>
+            <td>🔒 SSH</td>
+            <td><span data-lang="en">SSH public keys</span><span data-lang="zh">SSH 公钥</span></td>
+          </tr>
+          <tr>
+            <td>✉️ Email</td>
+            <td><span data-lang="en">SendGrid, Resend, SMTP credentials</span><span data-lang="zh">SendGrid、Resend、SMTP 凭证</span></td>
+          </tr>
+          <tr>
+            <td>☁️ Cloud</td>
+            <td><span data-lang="en">AWS, Google Cloud, Azure, Alibaba Cloud</span><span data-lang="zh">AWS、Google Cloud、Azure、阿里云</span></td>
+          </tr>
+          <tr>
+            <td>💳 Payment</td>
+            <td><span data-lang="en">Stripe, PayPal, and payment gateways</span><span data-lang="zh">Stripe、PayPal 及支付网关</span></td>
+          </tr>
+          <tr>
+            <td>🔑 Generic</td>
+            <td><span data-lang="en">Any other API key or secret</span><span data-lang="zh">任何其他 API 密钥或密钥</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Search & Copy -->
+    <div class="content-card" id="search-copy">
+      <h2><span data-lang="en">4. Searching & Copying</span><span data-lang="zh">4. 搜索与复制</span></h2>
+      <h3><span data-lang="en">Global Hotkey</span><span data-lang="zh">全局快捷键</span></h3>
+      <p>
+        <span data-lang="en">Press <span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">K</span> in any app to open the Spotlight-like search panel. Type to filter, press Enter to copy the selected key to your clipboard.</span>
+        <span data-lang="zh">在任意应用中按 <span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">K</span> 打开类似 Spotlight 的搜索面板。输入关键词筛选，按回车复制选中的密钥到剪贴板。</span>
+      </p>
+      <h3><span data-lang="en">Sidebar Filtering</span><span data-lang="zh">侧边栏筛选</span></h3>
+      <p>
+        <span data-lang="en">Use the sidebar to filter keys by type (LLM, Code, SaaS…) or by provider (OpenAI, GitHub…). Each category shows a count badge.</span>
+        <span data-lang="zh">使用侧边栏按类型（LLM、Code、SaaS…）或按供应商（OpenAI、GitHub…）筛选密钥。每个分类显示数量徽标。</span>
+      </p>
+      <h3><span data-lang="en">Clipboard Auto-Clear</span><span data-lang="zh">剪贴板自动清除</span></h3>
+      <p>
+        <span data-lang="en">After copying a key, the clipboard automatically clears after a configurable timeout (15–120 seconds). A countdown indicator shows in both the main window and menu bar.</span>
+        <span data-lang="zh">复制密钥后，剪贴板会在可配置的超时时间（15~120 秒）后自动清除。主窗口和菜单栏都会显示倒计时指示器。</span>
+      </p>
+    </div>
+
+    <!-- Menu Bar -->
+    <div class="content-card" id="menu-bar">
+      <h2><span data-lang="en">5. Menu Bar</span><span data-lang="zh">5. 菜单栏</span></h2>
+      <p>
+        <span data-lang="en">apikey lives in your menu bar for quick access without opening the main window:</span>
+        <span data-lang="zh">apikey 常驻菜单栏，无需打开主窗口即可快速操作：</span>
+      </p>
+      <ul>
+        <li><span data-lang="en"><strong>Quick copy</strong> — Your 5 most recent keys are listed for one-click copying.</span><span data-lang="zh"><strong>快速复制</strong> — 最近使用的 5 个密钥一键复制。</span></li>
+        <li><span data-lang="en"><strong>Lock / Unlock</strong> — Toggle the lock state from the menu bar.</span><span data-lang="zh"><strong>锁定 / 解锁</strong> — 在菜单栏切换锁定状态。</span></li>
+        <li><span data-lang="en"><strong>Clipboard countdown</strong> — See the remaining time before clipboard auto-clears.</span><span data-lang="zh"><strong>剪贴板倒计时</strong> — 查看剪贴板自动清除前的剩余时间。</span></li>
+      </ul>
+    </div>
+
+    <!-- Import & Export -->
+    <div class="content-card" id="import-export">
+      <h2><span data-lang="en">6. Import & Export</span><span data-lang="zh">6. 导入与导出</span></h2>
+      <h3><span data-lang="en">Import from .env</span><span data-lang="zh">从 .env 导入</span></h3>
+      <p>
+        <span data-lang="en">Click the import button (↓) in the toolbar to batch import keys from a <code>.env</code> file. apikey previews each entry with auto-detected provider and type before importing.</span>
+        <span data-lang="zh">点击工具栏中的导入按钮（↓），从 <code>.env</code> 文件批量导入密钥。导入前 apikey 会预览每条记录并自动识别供应商和类型。</span>
+      </p>
+      <h3><span data-lang="en">Export</span><span data-lang="zh">导出</span></h3>
+      <p>
+        <span data-lang="en">Export your keys as <code>.env</code> or <code>JSON</code> format for project migration or team sharing. You can choose whether to include key values.</span>
+        <span data-lang="zh">将密钥导出为 <code>.env</code> 或 <code>JSON</code> 格式，方便项目迁移或团队共享。可以选择是否包含密钥值。</span>
+      </p>
+    </div>
+
+    <!-- Encrypted Backup -->
+    <div class="content-card" id="backup">
+      <h2><span data-lang="en">7. Encrypted Backup & Restore</span><span data-lang="zh">7. 加密备份与恢复</span></h2>
+      <p>
+        <span data-lang="en">apikey supports AES-GCM encrypted full backup via the menu bar:</span>
+        <span data-lang="zh">apikey 支持通过菜单栏进行 AES-GCM 加密全量备份：</span>
+      </p>
+      <ul>
+        <li>
+          <span data-lang="en"><strong>Backup</strong> — Menu bar → <code>APIKEY 备份…</code> (<span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">B</span>). All keys are exported to an encrypted <code>.apikey</code> file. The encryption key is stored in iCloud Keychain for automatic sync across devices.</span>
+          <span data-lang="zh"><strong>备份</strong> — 菜单栏 → <code>APIKEY 备份…</code>（<span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">B</span>）。所有密钥导出为加密的 <code>.apikey</code> 文件。加密密钥存储在 iCloud 钥匙串中，自动在设备间同步。</span>
+        </li>
+        <li>
+          <span data-lang="en"><strong>Restore</strong> — Menu bar → <code>备份恢复…</code> (<span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">R</span>). Select a <code>.apikey</code> backup file to restore. Existing keys are skipped to prevent duplicates.</span>
+          <span data-lang="zh"><strong>恢复</strong> — 菜单栏 → <code>备份恢复…</code>（<span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">R</span>）。选择 <code>.apikey</code> 备份文件恢复。已存在的密钥会被跳过，防止重复。</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Security -->
+    <div class="content-card" id="security">
+      <h2><span data-lang="en">8. Security & Locking</span><span data-lang="zh">8. 安全与锁定</span></h2>
+      <h3><span data-lang="en">Keychain Storage</span><span data-lang="zh">钥匙串存储</span></h3>
+      <p>
+        <span data-lang="en">All API key values are stored in the macOS Keychain with Data Protection. Metadata (names, providers, timestamps) is stored in a local SQLite database. Key values are never written to disk in plain text.</span>
+        <span data-lang="zh">所有 API 密钥值通过 Data Protection 存储在 macOS 钥匙串中。元数据（名称、供应商、时间戳）存储在本地 SQLite 数据库中。密钥值永远不会以明文形式写入磁盘。</span>
+      </p>
+      <h3><span data-lang="en">Auto-Lock</span><span data-lang="zh">自动锁定</span></h3>
+      <p>
+        <span data-lang="en">The app automatically locks after a configurable idle period (1–30 minutes). When locked:</span>
+        <span data-lang="zh">应用在可配置的空闲时间（1~30 分钟）后自动锁定。锁定时：</span>
+      </p>
+      <ul>
+        <li><span data-lang="en">All in-memory key caches are wiped</span><span data-lang="zh">所有内存中的密钥缓存被清空</span></li>
+        <li><span data-lang="en">The clipboard is cleared</span><span data-lang="zh">剪贴板被清除</span></li>
+        <li><span data-lang="en">The interface is blurred and inaccessible</span><span data-lang="zh">界面模糊且不可操作</span></li>
+      </ul>
+      <p>
+        <span data-lang="en">You can also manually lock using the lock button in the toolbar or menu bar.</span>
+        <span data-lang="zh">你也可以通过工具栏或菜单栏的锁定按钮手动锁定。</span>
+      </p>
+    </div>
+
+    <!-- Settings -->
+    <div class="content-card" id="settings">
+      <h2><span data-lang="en">9. Settings</span><span data-lang="zh">9. 设置</span></h2>
+      <p>
+        <span data-lang="en">Open Settings via <span class="kbd">⌘</span><span class="kbd">,</span> or the system menu. Available options:</span>
+        <span data-lang="zh">通过 <span class="kbd">⌘</span><span class="kbd">,</span> 或系统菜单打开设置。可用选项：</span>
+      </p>
+      <ul>
+        <li><span data-lang="en"><strong>Language</strong> — English / 中文, or follow system</span><span data-lang="zh"><strong>语言</strong> — English / 中文，或跟随系统</span></li>
+        <li><span data-lang="en"><strong>Clipboard clear time</strong> — 15 to 120 seconds, or disabled</span><span data-lang="zh"><strong>剪贴板清除时间</strong> — 15 到 120 秒，或禁用</span></li>
+        <li><span data-lang="en"><strong>Auto-lock</strong> — 1 to 30 minutes idle timeout</span><span data-lang="zh"><strong>自动锁定</strong> — 1 到 30 分钟空闲超时</span></li>
+        <li><span data-lang="en"><strong>Global hotkey</strong> — Enable/disable ⌘⇧K</span><span data-lang="zh"><strong>全局快捷键</strong> — 启用/禁用 ⌘⇧K</span></li>
+      </ul>
+    </div>
+
+    <!-- Keyboard Shortcuts -->
+    <div class="content-card" id="shortcuts">
+      <h2><span data-lang="en">10. Keyboard Shortcuts</span><span data-lang="zh">10. 快捷键</span></h2>
+      <table class="shortcut-table">
+        <thead>
+          <tr>
+            <th><span data-lang="en">Shortcut</span><span data-lang="zh">快捷键</span></th>
+            <th><span data-lang="en">Action</span><span data-lang="zh">操作</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="kbd">⌘</span> <span class="kbd">⇧</span> <span class="kbd">K</span></td>
+            <td><span data-lang="en">Global search & copy (works in any app)</span><span data-lang="zh">全局搜索并复制（在任意应用中可用）</span></td>
+          </tr>
+          <tr>
+            <td><span class="kbd">⌘</span> <span class="kbd">⇧</span> <span class="kbd">B</span></td>
+            <td><span data-lang="en">Encrypted backup</span><span data-lang="zh">加密备份</span></td>
+          </tr>
+          <tr>
+            <td><span class="kbd">⌘</span> <span class="kbd">⇧</span> <span class="kbd">R</span></td>
+            <td><span data-lang="en">Restore from backup</span><span data-lang="zh">从备份恢复</span></td>
+          </tr>
+          <tr>
+            <td><span class="kbd">⌘</span> <span class="kbd">,</span></td>
+            <td><span data-lang="en">Open Settings</span><span data-lang="zh">打开设置</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FAQ -->
+    <div class="content-card" id="faq">
+      <h2><span data-lang="en">11. FAQ</span><span data-lang="zh">11. 常见问题</span></h2>
+
+      <h3><span data-lang="en">Where are my keys stored?</span><span data-lang="zh">我的密钥存储在哪里？</span></h3>
+      <p>
+        <span data-lang="en">Key values are encrypted in the macOS Keychain. Metadata is stored in a local SQLite database under <code>~/Library/Application Support/com.apikey.app/</code>.</span>
+        <span data-lang="zh">密钥值加密存储在 macOS 钥匙串中。元数据存储在 <code>~/Library/Application Support/com.apikey.app/</code> 下的本地 SQLite 数据库中。</span>
+      </p>
+
+      <h3><span data-lang="en">Does apikey connect to the internet?</span><span data-lang="zh">apikey 会联网吗？</span></h3>
+      <p>
+        <span data-lang="en">No. apikey is a purely local app. The only exception is the optional Health Check feature, which sends a minimal validation request directly to the provider's API when manually triggered.</span>
+        <span data-lang="zh">不会。apikey 是纯本地应用。唯一的例外是可选的健康检查功能，手动触发时会直接向供应商 API 发送一个最小化的验证请求。</span>
+      </p>
+
+      <h3><span data-lang="en">I lost my keys. Can you recover them?</span><span data-lang="zh">我丢失了密钥，你们能恢复吗？</span></h3>
+      <p>
+        <span data-lang="en">No. We have no access to your keys because everything is stored locally on your Mac. We strongly recommend creating regular encrypted backups using the backup feature.</span>
+        <span data-lang="zh">不能。因为所有数据都存储在你的 Mac 本地，我们无法访问你的密钥。强烈建议使用备份功能定期创建加密备份。</span>
+      </p>
+
+      <h3><span data-lang="en">How do I migrate to a new Mac?</span><span data-lang="zh">如何迁移到新 Mac？</span></h3>
+      <p>
+        <span data-lang="en">Create an encrypted backup (<span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">B</span>) on your old Mac, transfer the <code>.apikey</code> file, then restore (<span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">R</span>) on your new Mac. The backup encryption key syncs automatically via iCloud Keychain.</span>
+        <span data-lang="zh">在旧 Mac 上创建加密备份（<span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">B</span>），传输 <code>.apikey</code> 文件，然后在新 Mac 上恢复（<span class="kbd">⌘</span><span class="kbd">⇧</span><span class="kbd">R</span>）。备份加密密钥通过 iCloud 钥匙串自动同步。</span>
+      </p>
+
+      <h3><span data-lang="en">What macOS versions are supported?</span><span data-lang="zh">支持哪些 macOS 版本？</span></h3>
+      <p>
+        <span data-lang="en">apikey requires macOS 15.4 or later. Both Apple Silicon and Intel Macs are supported.</span>
+        <span data-lang="zh">apikey 需要 macOS 15.4 或更高版本。同时支持 Apple Silicon 和 Intel Mac。</span>
+      </p>
+    </div>
+
+    <!-- Contact -->
+    <div class="content-card">
+      <h2><span data-lang="en">Need More Help?</span><span data-lang="zh">需要更多帮助？</span></h2>
+      <p>
+        <span data-lang="en">If you have questions not covered here, please contact:</span>
+        <span data-lang="zh">如果本页未能解答你的问题，请联系：</span>
+      </p>
+      <p><strong>Xiaotian LIU</strong><br>lxiaotian@gmail.com</p>
+    </div>
+
+    <p class="meta">© 2026 Xiaotian LIU. All rights reserved.</p>
+
+  </div>
+
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-links">
+      <a href="/"><span data-lang="en">Home</span><span data-lang="zh">首页</span></a>
+      <a href="help.html"><span data-lang="en">Help</span><span data-lang="zh">帮助</span></a>
+      <a href="privacy.html"><span data-lang="en">Privacy</span><span data-lang="zh">隐私政策</span></a>
+    </div>
+    <p>apikey v0.2.2 &copy; 2026 Xiaotian LIU &nbsp;·&nbsp; Made with ♥ on macOS</p>
+  </div>
+</footer>
+
+<script>
+  function toggleLang() {
+    const html = document.documentElement;
+    const current = html.getAttribute('lang');
+    const next = current === 'zh' ? 'en' : 'zh';
+    html.setAttribute('lang', next);
+    document.getElementById('langLabel').textContent = next === 'en' ? 'EN / 中' : '中 / EN';
+    localStorage.setItem('apikey-lang', next);
+  }
+  (function() {
+    const saved = localStorage.getItem('apikey-lang');
+    if (saved && saved === 'zh') {
+      document.documentElement.setAttribute('lang', 'zh');
+      document.getElementById('langLabel').textContent = '中 / EN';
+    }
+  })();
+</script>
+
+</body>
+</html>
