@@ -1394,19 +1394,35 @@ github PAT        GitHub      CODE    GITHUB_TOKEN</span>
       .catch(() => {});
   })();
 
-  // Fetch page view count from GoatCounter API
-  (function() {
-    fetch('https://dalaohu.goatcounter.com/counter//.json')
-      .then(r => r.json())
-      .then(data => {
-        const el = document.getElementById('statPageviews');
-        if (el && data.count) {
-          el.textContent = data.count;
-          document.getElementById('heroStats').style.display = 'flex';
-        }
-      })
-      .catch(() => {});
-  })();
+  // Fetch page view count from GoatCounter API (requires "Allow visitor counts" enabled)
+  function loadPageviews() {
+    var paths = ['/', '/index.html', '/cli.html', '/help.html', '/privacy.html'];
+    var total = 0;
+    var done = 0;
+    paths.forEach(function(p) {
+      var encoded = encodeURIComponent(p);
+      fetch('https://dalaohu.goatcounter.com/counter/' + encoded + '.json')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+          if (data.count) {
+            total += parseInt(data.count.replace(/,/g, ''), 10) || 0;
+          }
+        })
+        .catch(function() {})
+        .finally(function() {
+          done++;
+          if (done === paths.length && total > 0) {
+            var el = document.getElementById('statPageviews');
+            if (el) {
+              el.textContent = total.toLocaleString();
+              document.getElementById('heroStats').style.display = 'flex';
+            }
+          }
+        });
+    });
+  }
+  // Wait a bit for GoatCounter to register the current visit first
+  setTimeout(loadPageviews, 1500);
 </script>
 
 <!-- GoatCounter analytics (privacy-friendly, no cookies) -->
