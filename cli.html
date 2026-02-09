@@ -412,7 +412,7 @@
   <div class="hero-install">
     <div class="install-box" onclick="copyInstall(this)">
       <span class="prompt">$</span>
-      <span>curl -fsSL https://coldplay-now.github.io/apikey-website/downloads/apikey-cli-v1.0.0-darwin-universal.tar.gz | tar xz &amp;&amp; sudo mv apikey /usr/local/bin/</span>
+      <span>curl -fsSL https://coldplay-now.github.io/apikey-website/downloads/install-cli.sh | bash</span>
       <span class="copy-hint">
         <span data-lang="en">click to copy</span>
         <span data-lang="zh">点击复制</span>
@@ -460,7 +460,7 @@
         <span data-lang="en">Option 1: One-Line Install</span>
         <span data-lang="zh">方式一：一键安装</span>
       </h3>
-      <div class="code-block"><code><span class="cmd">curl</span> <span class="flag">-fsSL</span> https://coldplay-now.github.io/apikey-website/downloads/apikey-cli-v1.0.0-darwin-universal.tar.gz | <span class="cmd">tar</span> xz &amp;&amp; <span class="cmd">sudo mv</span> apikey /usr/local/bin/</code></div>
+      <div class="code-block"><code><span class="cmd">curl</span> <span class="flag">-fsSL</span> https://coldplay-now.github.io/apikey-website/downloads/install-cli.sh | <span class="cmd">bash</span></code></div>
 
       <h3>
         <span data-lang="en">Option 2: Manual Download</span>
@@ -765,7 +765,7 @@
     }
   })();
   function copyInstall(el) {
-    const text = 'curl -fsSL https://coldplay-now.github.io/apikey-website/downloads/apikey-cli-v1.0.0-darwin-universal.tar.gz | tar xz && sudo mv apikey /usr/local/bin/';
+    const text = 'curl -fsSL https://coldplay-now.github.io/apikey-website/downloads/install-cli.sh | bash';
     navigator.clipboard.writeText(text).then(() => {
       const copied = el.querySelector('.install-copied');
       copied.classList.add('show');
