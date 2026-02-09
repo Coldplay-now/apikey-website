@@ -772,6 +772,30 @@
       position: relative;
     }
 
+    /* ── Stats pills ── */
+    .hero-stats {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .stat-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      backdrop-filter: blur(12px);
+    }
+    .stat-pill span:first-of-type {
+      color: var(--orange);
+      font-weight: 700;
+    }
+
     /* ── Responsive ── */
     @media (max-width: 900px) {
       .features-grid, .security-grid { grid-template-columns: 1fr 1fr; }
@@ -825,7 +849,7 @@
       <button class="lang-toggle" id="langToggle" onclick="toggleLang()">
         <span id="langLabel">EN / 中</span>
       </button>
-      <a href="downloads/apikey-v0.2.5.dmg" class="nav-btn">
+      <a href="https://github.com/Coldplay-now/apikey-website/releases/download/app-v0.2.5/apikey-v0.2.5.dmg" class="nav-btn">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Download
       </a>
@@ -847,13 +871,25 @@
       <span data-lang="zh">AI 时代的 API Key 效率工具。一个保险箱管理 OpenAI、Anthropic、DeepSeek 等 30+ 供应商密钥。Keychain 加密，零上传，⌘⇧K 即时调用。</span>
     </p>
     <div class="hero-actions">
-      <a href="downloads/apikey-v0.2.5.dmg" class="btn btn-primary">
+      <a href="https://github.com/Coldplay-now/apikey-website/releases/download/app-v0.2.5/apikey-v0.2.5.dmg" class="btn btn-primary">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         <span data-lang="en">Download for macOS</span><span data-lang="zh">下载 macOS 版</span>
       </a>
     </div>
     <div class="hero-meta">
       macOS 15.4+ &nbsp;·&nbsp; Apple Silicon + Intel &nbsp;·&nbsp; Free
+    </div>
+    <div class="hero-stats" id="heroStats" style="display:none; margin-top:20px;">
+      <span class="stat-pill">
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" style="opacity:0.6"><path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14ZM7.25 7.689V2a.75.75 0 0 1 1.5 0v5.689l1.97-1.969a.749.749 0 1 1 1.06 1.06l-3.25 3.25a.749.749 0 0 1-1.06 0L4.22 6.78a.749.749 0 1 1 1.06-1.06l1.97 1.969Z"/></svg>
+        <span id="statDownloads">—</span>
+        <span data-lang="en">downloads</span><span data-lang="zh">次下载</span>
+      </span>
+      <span class="stat-pill">
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor" style="opacity:0.6"><path d="M8 2c1.981 0 3.671.992 4.933 2.078 1.27 1.091 2.187 2.345 2.637 3.023a1.62 1.62 0 0 1 0 1.798c-.45.678-1.367 1.932-2.637 3.023C11.67 13.008 9.981 14 8 14c-1.981 0-3.671-.992-4.933-2.078C1.797 10.831.88 9.577.43 8.899a1.62 1.62 0 0 1 0-1.798c.45-.678 1.367-1.932 2.637-3.023C4.33 2.992 6.019 2 8 2ZM1.679 7.932a.12.12 0 0 0 0 .136c.411.622 1.241 1.75 2.366 2.717C5.176 11.758 6.527 12.5 8 12.5c1.473 0 2.825-.742 3.955-1.715 1.124-.967 1.954-2.096 2.366-2.717a.12.12 0 0 0 0-.136c-.412-.621-1.242-1.75-2.366-2.717C10.824 4.242 9.473 3.5 8 3.5c-1.473 0-2.824.742-3.955 1.715-1.124.967-1.954 2.096-2.366 2.717ZM8 10a2 2 0 1 1-.001-3.999A2 2 0 0 1 8 10Z"/></svg>
+        <span id="statPageviews">—</span>
+        <span data-lang="en">page views</span><span data-lang="zh">次浏览</span>
+      </span>
     </div>
   </section>
 
@@ -1263,7 +1299,7 @@ github PAT        GitHub      CODE    GITHUB_TOKEN</span>
         <span data-lang="zh">纯本地运行，无隐私风险，零上传。密钥永远不离开你的 Mac — 一个字节都不会。</span>
       </p>
       <div class="cta-actions">
-        <a href="downloads/apikey-v0.2.5.dmg" class="btn btn-primary">
+        <a href="https://github.com/Coldplay-now/apikey-website/releases/download/app-v0.2.5/apikey-v0.2.5.dmg" class="btn btn-primary">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           <span data-lang="en">Download for macOS</span><span data-lang="zh">下载 macOS 版</span>
         </a>
@@ -1338,7 +1374,44 @@ github PAT        GitHub      CODE    GITHUB_TOKEN</span>
 
     resetTimer();
   })();
+
+  // Fetch download counts from GitHub Releases API
+  (function() {
+    const API = 'https://api.github.com/repos/Coldplay-now/apikey-website/releases';
+    fetch(API)
+      .then(r => r.json())
+      .then(releases => {
+        let total = 0;
+        releases.forEach(r => {
+          (r.assets || []).forEach(a => { total += a.download_count; });
+        });
+        const el = document.getElementById('statDownloads');
+        if (el) {
+          el.textContent = total.toLocaleString();
+          document.getElementById('heroStats').style.display = 'flex';
+        }
+      })
+      .catch(() => {});
+  })();
+
+  // Fetch page view count from GoatCounter API
+  (function() {
+    fetch('https://dalaohu.goatcounter.com/counter//.json')
+      .then(r => r.json())
+      .then(data => {
+        const el = document.getElementById('statPageviews');
+        if (el && data.count) {
+          el.textContent = data.count;
+          document.getElementById('heroStats').style.display = 'flex';
+        }
+      })
+      .catch(() => {});
+  })();
 </script>
+
+<!-- GoatCounter analytics (privacy-friendly, no cookies) -->
+<script data-goatcounter="https://dalaohu.goatcounter.com/count"
+        async src="//gc.zgo.at/count.js"></script>
 
 </body>
 </html>
