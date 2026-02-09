@@ -397,7 +397,7 @@
 
   <!-- Hero -->
   <div class="page-header">
-    <div class="version-badge">v1.0.0 — Apple Notarized</div>
+    <div class="version-badge">v1.1.0 — Apple Notarized</div>
     <h1>
       <span data-lang="en"><span class="gradient-text">apikey-cli</span></span>
       <span data-lang="zh"><span class="gradient-text">apikey-cli</span></span>
@@ -437,16 +437,16 @@
         <span data-lang="zh">macOS 通用二进制 — Apple Silicon + Intel。</span>
       </p>
       <div style="margin: 28px 0;">
-        <a href="downloads/apikey-cli-v1.0.0-darwin-universal.tar.gz" class="download-btn">
-          <span data-lang="en">Download apikey-cli v1.0.0</span>
-          <span data-lang="zh">下载 apikey-cli v1.0.0</span>
+        <a href="downloads/apikey-cli-v1.1.0-darwin-universal.tar.gz" class="download-btn">
+          <span data-lang="en">Download apikey-cli v1.1.0</span>
+          <span data-lang="zh">下载 apikey-cli v1.1.0</span>
         </a>
       </div>
       <p class="download-meta">
         <span data-lang="en">macOS 14+ · Universal Binary · 5.7 MB · Apple Notarized</span>
         <span data-lang="zh">macOS 14+ · 通用二进制 · 5.7 MB · Apple 公证</span>
       </p>
-      <p class="sha-value">SHA-256: 16ed4ae050be279a37b6c7dbed5d52111d5e83e940408dd3b4aa5f06dae0c67a</p>
+      <p class="sha-value">SHA-256: 3d7d8ccded482afe2ea4466a9a1a4365d92f92955ca9530dcb705cc1b56036bb</p>
     </div>
 
     <!-- Install -->
@@ -468,13 +468,13 @@
       </h3>
       <ol class="step-list">
         <li>
-          <span data-lang="en">Download the <a href="downloads/apikey-cli-v1.0.0-darwin-universal.tar.gz" style="color: var(--orange);">tar.gz</a> from above</span>
-          <span data-lang="zh">从上方下载 <a href="downloads/apikey-cli-v1.0.0-darwin-universal.tar.gz" style="color: var(--orange);">tar.gz</a> 文件</span>
+          <span data-lang="en">Download the <a href="downloads/apikey-cli-v1.1.0-darwin-universal.tar.gz" style="color: var(--orange);">tar.gz</a> from above</span>
+          <span data-lang="zh">从上方下载 <a href="downloads/apikey-cli-v1.1.0-darwin-universal.tar.gz" style="color: var(--orange);">tar.gz</a> 文件</span>
         </li>
         <li>
           <span data-lang="en">Extract and install:</span>
           <span data-lang="zh">解压并安装：</span>
-          <div class="code-block"><code><span class="cmd">tar</span> <span class="flag">xzf</span> apikey-cli-v1.0.0-darwin-universal.tar.gz
+          <div class="code-block"><code><span class="cmd">tar</span> <span class="flag">xzf</span> apikey-cli-v1.1.0-darwin-universal.tar.gz
 <span class="cmd">sudo mv</span> apikey /usr/local/bin/
 <span class="cmd">apikey</span> version</code></div>
         </li>
@@ -510,8 +510,8 @@
 <span class="comment"># Run a command with keys injected as env vars (recommended)</span>
 <span class="cmd">apikey</span> run <span class="flag">--provider</span> <span class="arg">openai,anthropic</span> <span class="flag">--</span> python main.py
 
-<span class="comment"># Generate Cursor rules for AI agent</span>
-<span class="cmd">apikey</span> skills <span class="flag">--format</span> <span class="arg">cursor</span></code></div>
+<span class="comment"># Generate project rules for AI agent</span>
+<span class="cmd">apikey</span> rules</code></div>
     </div>
 
     <!-- Safety Levels -->
@@ -641,7 +641,15 @@
         <tbody>
           <tr>
             <td>skills</td>
-            <td><span data-lang="en">Generate agent capability docs (Cursor rules / Markdown / JSON)</span><span data-lang="zh">生成 Agent 能力文档（Cursor rules / Markdown / JSON）</span></td>
+            <td><span data-lang="en">Install SKILL.md to ~/.cursor/skills/ — teaches agents what this tool does</span><span data-lang="zh">安装 SKILL.md 到 ~/.cursor/skills/ — 告诉 Agent 这个工具是什么</span></td>
+          </tr>
+          <tr>
+            <td>commands</td>
+            <td><span data-lang="en">Output machine-readable command schema (JSON) — teaches agents how to call each command</span><span data-lang="zh">输出命令 JSON schema — 告诉 Agent 每个命令怎么调用</span></td>
+          </tr>
+          <tr>
+            <td>rules</td>
+            <td><span data-lang="en">Generate .cursor/rules/apikey.mdc — project-specific key rules with available keys</span><span data-lang="zh">生成 .cursor/rules/apikey.mdc — 含可用密钥的项目级规则</span></td>
           </tr>
           <tr>
             <td>completion</td>
@@ -662,16 +670,44 @@
         <span data-lang="zh">Agent 集成</span>
       </h2>
 
-      <h3>Cursor</h3>
+      <h3>
+        <span data-lang="en">Three-Layer Agent Setup</span>
+        <span data-lang="zh">Agent 三层配置</span>
+      </h3>
       <p>
-        <span data-lang="en">Generate a Cursor rules file so your AI assistant knows about your available keys:</span>
-        <span data-lang="zh">生成 Cursor rules 文件，让你的 AI 助手了解可用密钥：</span>
+        <span data-lang="en">apikey-cli provides three distinct commands for AI agent integration, each serving a different purpose:</span>
+        <span data-lang="zh">apikey-cli 提供三个独立的 Agent 集成命令，各自承担不同职责：</span>
       </p>
-      <div class="code-block"><code><span class="cmd">apikey</span> skills <span class="flag">--format</span> <span class="arg">cursor</span></code></div>
-      <p>
-        <span data-lang="en">This creates <code>.cursor/rules/apikey.mdc</code> in your project.</span>
-        <span data-lang="zh">这会在项目中创建 <code>.cursor/rules/apikey.mdc</code> 文件。</span>
-      </p>
+      <div class="code-block"><code><span class="comment"># 1. Install tool capability description (one-time, global)</span>
+<span class="cmd">apikey</span> skills
+<span class="comment">#    → ~/.cursor/skills/apikey-cli/SKILL.md</span>
+
+<span class="comment"># 2. Query command schema (stdout JSON, on-demand)</span>
+<span class="cmd">apikey</span> commands
+<span class="comment">#    → {"tool":"apikey-cli","commands":[...]}</span>
+
+<span class="comment"># 3. Generate project-specific rules (per-project)</span>
+<span class="cmd">apikey</span> rules
+<span class="comment">#    → .cursor/rules/apikey.mdc</span></code></div>
+
+      <h3>
+        <span data-lang="en">What Each Command Does</span>
+        <span data-lang="zh">各命令职责</span>
+      </h3>
+      <ul>
+        <li>
+          <span data-lang="en"><strong><code>skills</code></strong> — Writes a SKILL.md that tells agents <em>what apikey-cli is and when to use it</em>. Generic, no project data.</span>
+          <span data-lang="zh"><strong><code>skills</code></strong> — 写入 SKILL.md，告诉 Agent <em>apikey-cli 是什么、什么时候用</em>。通用内容，不含项目数据。</span>
+        </li>
+        <li>
+          <span data-lang="en"><strong><code>commands</code></strong> — Outputs JSON schema describing <em>every command, its flags, safety level, and output format</em>. Agents can parse this to learn how to call each command.</span>
+          <span data-lang="zh"><strong><code>commands</code></strong> — 输出 JSON schema，描述<em>每个命令的参数、安全等级和输出格式</em>。Agent 解析后即可正确调用。</span>
+        </li>
+        <li>
+          <span data-lang="en"><strong><code>rules</code></strong> — Generates a .mdc file with <em>your actual key list and usage rules</em>. Project-specific, auto-loaded by Cursor.</span>
+          <span data-lang="zh"><strong><code>rules</code></strong> — 生成 .mdc 文件，包含<em>实际密钥列表和使用规则</em>。项目专属，Cursor 自动加载。</span>
+        </li>
+      </ul>
 
       <h3>
         <span data-lang="en">Output Format</span>
@@ -744,7 +780,7 @@
       <a href="help.html"><span data-lang="en">Help</span><span data-lang="zh">帮助</span></a>
       <a href="privacy.html"><span data-lang="en">Privacy</span><span data-lang="zh">隐私政策</span></a>
     </div>
-    <p>apikey-cli v1.0.0 &copy; 2026 XT &nbsp;&middot;&nbsp; Made with ♥ on macOS</p>
+    <p>apikey-cli v1.1.0 &copy; 2026 XT &nbsp;&middot;&nbsp; Made with ♥ on macOS</p>
   </div>
 </footer>
 

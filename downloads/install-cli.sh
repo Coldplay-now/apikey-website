@@ -7,7 +7,7 @@ set -euo pipefail
 BINARY_NAME="apikey"
 INSTALL_DIR="/usr/local/bin"
 WEBSITE="https://coldplay-now.github.io/apikey-website"
-VERSION="1.0.0"
+VERSION="1.1.0"
 DOWNLOAD_URL="${WEBSITE}/downloads/apikey-cli-v${VERSION}-darwin-universal.tar.gz"
 
 # Detect platform
