@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>apikey-cli — CLI for Agents</title>
+  <meta name="description" content="apikey-cli is the terminal and AI agent access layer for the apikey macOS App. Securely inject API keys via environment variables.">
+  <link rel="icon" href="assets/app-icon.png" type="image/png">
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --card: rgba(255,255,255,0.03);
+      --border: rgba(255,255,255,0.08);
+      --border-subtle: rgba(255,255,255,0.05);
+      --text: #f0f0f0;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --orange: #f97316;
+      --amber: #fbbf24;
+      --emerald: #34d399;
+      --gradient: linear-gradient(135deg, #f97316, #fb7185);
+      --gradient-subtle: linear-gradient(135deg, rgba(249,115,22,0.15), rgba(251,113,133,0.15));
+      --glow-orange: rgba(249,115,22,0.12);
+      --glow-coral: rgba(251,113,133,0.08);
+      --radius: 20px;
+      --radius-sm: 12px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html:not([lang="zh"]) [data-lang="zh"] { display: none; }
+    html[lang="zh"] [data-lang="en"] { display: none; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+      overflow-x: hidden;
+    }
+    .glow-top {
+      position: fixed; top: -300px; left: -200px;
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, var(--glow-orange), transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 32px;
+      position: relative;
+      z-index: 1;
+    }
+    nav {
+      padding: 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; color: var(--text);
+    }
+    .nav-brand img { width: 36px; height: 36px; border-radius: 10px; }
+    .nav-brand span { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-links a {
+      color: var(--text-secondary); text-decoration: none;
+      font-size: 14px; font-weight: 500; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .lang-toggle {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 6px 14px; border-radius: 100px;
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--text-secondary); font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; backdrop-filter: blur(12px);
+      user-select: none;
+    }
+    .lang-toggle:hover { border-color: var(--orange); color: var(--text); }
+
+    .page-header {
+      text-align: center;
+      padding: 80px 0 20px;
+    }
+    .page-header h1 {
+      font-size: 48px; font-weight: 800; letter-spacing: -2px; margin-bottom: 16px;
+    }
+    .page-header h1 .gradient-text {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .page-header p {
+      color: var(--text-secondary); font-size: 17px;
+    }
+    .version-badge {
+      display: inline-block;
+      background: var(--gradient-subtle);
+      border: 1px solid rgba(249,115,22,0.2);
+      border-radius: 100px;
+      padding: 6px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--orange);
+      margin-bottom: 24px;
+    }
+
+    .hero-install {
+      text-align: center;
+      padding: 28px 0 56px;
+    }
+    .install-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 24px;
+      font-family: 'SF Mono', 'Menlo', monospace;
+      font-size: 14px;
+      color: var(--text);
+      backdrop-filter: blur(12px);
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .install-box:hover {
+      border-color: var(--orange);
+      background: rgba(255,255,255,0.06);
+    }
+    .install-box .prompt { color: var(--emerald); }
+    .install-box .copy-hint {
+      font-family: -apple-system, sans-serif;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+    .install-copied {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(52,211,153,0.15);
+      border-radius: var(--radius-sm);
+      color: var(--emerald);
+      font-family: -apple-system, sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .install-copied.show { opacity: 1; }
+
+    .content { padding: 0 0 100px; }
+
+    .content-card {
+      background: var(--card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: 48px 40px;
+      backdrop-filter: blur(12px);
+      margin-bottom: 24px;
+    }
+    .content-card h2 {
+      font-size: 22px; font-weight: 700; margin-bottom: 20px;
+      letter-spacing: -0.5px;
+    }
+    .content-card h3 {
+      font-size: 17px; font-weight: 700; margin: 24px 0 12px;
+      color: var(--orange);
+    }
+    .content-card p, .content-card li {
+      font-size: 15px; color: var(--text-secondary); line-height: 1.8;
+      margin-bottom: 12px;
+    }
+    .content-card ul, .content-card ol {
+      padding-left: 20px;
+    }
+    .content-card li { margin-bottom: 8px; }
+    .content-card code {
+      background: rgba(249,115,22,0.1);
+      color: var(--amber);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: 'SF Mono', 'Menlo', monospace;
+    }
+
+    .highlight-box {
+      background: var(--gradient-subtle);
+      border: 1px solid rgba(249,115,22,0.2);
+      border-radius: var(--radius-sm);
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+    .highlight-box p {
+      color: var(--text); font-weight: 600; margin-bottom: 0;
+    }
+
+    .code-block {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 20px 24px;
+      margin: 16px 0;
+      overflow-x: auto;
+    }
+    .code-block code {
+      background: none;
+      color: var(--text);
+      padding: 0;
+      font-size: 13px;
+      line-height: 1.7;
+      display: block;
+      white-space: pre;
+    }
+    .code-block .comment { color: var(--text-muted); }
+    .code-block .cmd { color: var(--emerald); }
+    .code-block .flag { color: var(--amber); }
+    .code-block .arg { color: var(--text-secondary); }
+
+    .download-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 32px;
+      background: var(--gradient);
+      color: white;
+      border: none;
+      border-radius: var(--radius-sm);
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 24px rgba(249,115,22,0.3);
+    }
+    .download-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 32px rgba(249,115,22,0.4);
+    }
+    .download-meta {
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .sha-value {
+      font-family: 'SF Mono', 'Menlo', monospace;
+      font-size: 11px;
+      color: var(--text-muted);
+      word-break: break-all;
+    }
+
+    /* Safety grid */
+    .safety-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin: 20px 0;
+    }
+    .safety-card {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 24px 20px;
+      text-align: center;
+    }
+    .safety-card .level {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .safety-card.level-0 .level { color: var(--emerald); }
+    .safety-card.level-1 .level { color: var(--amber); }
+    .safety-card.level-2 .level { color: #fb7185; }
+    .safety-card .level-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .safety-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 0;
+    }
+
+    /* Command table */
+    .cmd-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+    .cmd-table th, .cmd-table td {
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 14px;
+    }
+    .cmd-table th {
+      font-weight: 700; color: var(--text); font-size: 13px;
+      text-transform: uppercase; letter-spacing: 1px;
+    }
+    .cmd-table td { color: var(--text-secondary); }
+    .cmd-table td:first-child {
+      color: var(--amber);
+      font-family: 'SF Mono', 'Menlo', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .cmd-table .level-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      font-family: -apple-system, sans-serif;
+    }
+    .cmd-table .tag-0 { background: rgba(52,211,153,0.15); color: var(--emerald); }
+    .cmd-table .tag-1 { background: rgba(251,191,36,0.15); color: var(--amber); }
+    .cmd-table .tag-2 { background: rgba(251,113,133,0.15); color: #fb7185; }
+
+    .step-list {
+      counter-reset: step;
+      list-style: none;
+      padding-left: 0;
+    }
+    .step-list li {
+      counter-increment: step;
+      position: relative;
+      padding-left: 40px;
+      margin-bottom: 16px;
+    }
+    .step-list li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0; top: 2px;
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--gradient);
+      color: white;
+      font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 8px rgba(249,115,22,0.25);
+    }
+
+    .meta {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      padding: 24px 0;
+    }
+
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    footer a { color: var(--orange); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .footer-links {
+      display: flex; gap: 24px; justify-content: center; margin-bottom: 16px;
+    }
+    .footer-links a { color: var(--text-secondary); font-size: 13px; }
+
+    @media (max-width: 640px) {
+      .page-header h1 { font-size: 36px; }
+      .content-card { padding: 32px 24px; }
+      .safety-grid { grid-template-columns: 1fr; }
+      .install-box { flex-direction: column; font-size: 12px; padding: 12px 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="glow-top"></div>
+
+<div class="container">
+
+  <nav>
+    <a href="./" class="nav-brand">
+      <img src="assets/app-icon.png" alt="apikey">
+      <span>apikey</span>
+    </a>
+    <div class="nav-links">
+      <a href="./"><span data-lang="en">Home</span><span data-lang="zh">首页</span></a>
+      <a href="help.html"><span data-lang="en">Help</span><span data-lang="zh">帮助</span></a>
+      <a href="privacy.html"><span data-lang="en">Privacy</span><span data-lang="zh">隐私</span></a>
+      <button class="lang-toggle" onclick="toggleLang()">
+        <span id="langLabel">EN / 中</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="page-header">
+    <div class="version-badge">v1.0.0 — Apple Notarized</div>
+    <h1>
+      <span data-lang="en"><span class="gradient-text">apikey-cli</span></span>
+      <span data-lang="zh"><span class="gradient-text">apikey-cli</span></span>
+    </h1>
+    <p>
+      <span data-lang="en">The terminal & AI agent access layer for your API keys</span>
+      <span data-lang="zh">API 密钥的终端与 AI Agent 访问层</span>
+    </p>
+  </div>
+
+  <!-- One-line install -->
+  <div class="hero-install">
+    <div class="install-box" onclick="copyInstall(this)">
+      <span class="prompt">$</span>
+      <span>curl -fsSL https://raw.githubusercontent.com/Coldplay-now/apikey-cli/main/scripts/install.sh | bash</span>
+      <span class="copy-hint">
+        <span data-lang="en">click to copy</span>
+        <span data-lang="zh">点击复制</span>
+      </span>
+      <div class="install-copied">
+        <span data-lang="en">Copied!</span>
+        <span data-lang="zh">已复制!</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- Download -->
+    <div class="content-card" id="download" style="text-align: center;">
+      <h2>
+        <span data-lang="en">Download</span>
+        <span data-lang="zh">下载</span>
+      </h2>
+      <p>
+        <span data-lang="en">Universal binary for macOS — Apple Silicon + Intel.</span>
+        <span data-lang="zh">macOS 通用二进制 — Apple Silicon + Intel。</span>
+      </p>
+      <div style="margin: 28px 0;">
+        <a href="downloads/apikey-cli-v1.0.0-darwin-universal.tar.gz" class="download-btn">
+          <span data-lang="en">Download apikey-cli v1.0.0</span>
+          <span data-lang="zh">下载 apikey-cli v1.0.0</span>
+        </a>
+      </div>
+      <p class="download-meta">
+        <span data-lang="en">macOS 14+ · Universal Binary · 5.7 MB · Apple Notarized</span>
+        <span data-lang="zh">macOS 14+ · 通用二进制 · 5.7 MB · Apple 公证</span>
+      </p>
+      <p class="sha-value">SHA-256: cc4ad6cc46a425117d580eef380f7f7aaf0a3295d3b23ab14c50e9414eaafbc6</p>
+    </div>
+
+    <!-- Install -->
+    <div class="content-card" id="install">
+      <h2>
+        <span data-lang="en">Install</span>
+        <span data-lang="zh">安装</span>
+      </h2>
+
+      <h3>
+        <span data-lang="en">Option 1: One-Line Install</span>
+        <span data-lang="zh">方式一：一键安装</span>
+      </h3>
+      <div class="code-block"><code><span class="cmd">curl</span> <span class="flag">-fsSL</span> https://raw.githubusercontent.com/Coldplay-now/apikey-cli/main/scripts/install.sh | <span class="cmd">bash</span></code></div>
+
+      <h3>
+        <span data-lang="en">Option 2: Manual Download</span>
+        <span data-lang="zh">方式二：手动下载</span>
+      </h3>
+      <ol class="step-list">
+        <li>
+          <span data-lang="en">Download the <a href="downloads/apikey-cli-v1.0.0-darwin-universal.tar.gz" style="color: var(--orange);">tar.gz</a> from above</span>
+          <span data-lang="zh">从上方下载 <a href="downloads/apikey-cli-v1.0.0-darwin-universal.tar.gz" style="color: var(--orange);">tar.gz</a> 文件</span>
+        </li>
+        <li>
+          <span data-lang="en">Extract and install:</span>
+          <span data-lang="zh">解压并安装：</span>
+          <div class="code-block"><code><span class="cmd">tar</span> <span class="flag">xzf</span> apikey-cli-v1.0.0-darwin-universal.tar.gz
+<span class="cmd">sudo mv</span> apikey /usr/local/bin/
+<span class="cmd">apikey</span> version</code></div>
+        </li>
+      </ol>
+
+      <h3>
+        <span data-lang="en">Prerequisites</span>
+        <span data-lang="zh">前置条件</span>
+      </h3>
+      <div class="highlight-box">
+        <p>
+          <span data-lang="en">apikey-cli reads keys from the apikey macOS App. Install the <a href="./" style="color: var(--orange);">apikey App</a> first and add your keys.</span>
+          <span data-lang="zh">apikey-cli 从 apikey macOS App 读取密钥。请先安装 <a href="./" style="color: var(--orange);">apikey App</a> 并添加密钥。</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Quick Start -->
+    <div class="content-card" id="quickstart">
+      <h2>
+        <span data-lang="en">Quick Start</span>
+        <span data-lang="zh">快速上手</span>
+      </h2>
+      <div class="code-block"><code><span class="comment"># Check environment</span>
+<span class="cmd">apikey</span> status
+
+<span class="comment"># List all keys (metadata only, no key values)</span>
+<span class="cmd">apikey</span> list
+
+<span class="comment"># Search for a key</span>
+<span class="cmd">apikey</span> search <span class="arg">openai</span>
+
+<span class="comment"># Run a command with keys injected as env vars (recommended)</span>
+<span class="cmd">apikey</span> run <span class="flag">--provider</span> <span class="arg">openai,anthropic</span> <span class="flag">--</span> python main.py
+
+<span class="comment"># Generate Cursor rules for AI agent</span>
+<span class="cmd">apikey</span> skills <span class="flag">--format</span> <span class="arg">cursor</span></code></div>
+    </div>
+
+    <!-- Safety Levels -->
+    <div class="content-card" id="safety">
+      <h2>
+        <span data-lang="en">Safety Levels</span>
+        <span data-lang="zh">安全分级</span>
+      </h2>
+      <p>
+        <span data-lang="en">apikey-cli is designed with security-first approach, especially for AI agents:</span>
+        <span data-lang="zh">apikey-cli 以安全优先原则设计，尤其针对 AI Agent 场景：</span>
+      </p>
+      <div class="safety-grid">
+        <div class="safety-card level-0">
+          <div class="level">L0</div>
+          <div class="level-label"><span data-lang="en">Metadata</span><span data-lang="zh">元数据</span></div>
+          <p><span data-lang="en">No key values accessed. Safe for any context.</span><span data-lang="zh">不访问密钥值。任何场景下均安全。</span></p>
+        </div>
+        <div class="safety-card level-1">
+          <div class="level">L1</div>
+          <div class="level-label"><span data-lang="en">ENV Inject</span><span data-lang="zh">环境变量注入</span></div>
+          <p><span data-lang="en">Keys injected via env vars. Never in stdout.</span><span data-lang="zh">密钥通过环境变量注入。永不出现在 stdout。</span></p>
+        </div>
+        <div class="safety-card level-2">
+          <div class="level">L2</div>
+          <div class="level-label"><span data-lang="en">Plaintext</span><span data-lang="zh">明文</span></div>
+          <p><span data-lang="en">Requires explicit --unsafe-* flag.</span><span data-lang="zh">需要显式 --unsafe-* 标志。</span></p>
+        </div>
+      </div>
+      <div class="highlight-box">
+        <p>
+          <span data-lang="en">For AI agents: always use <code>apikey run</code> (Level 1) instead of <code>apikey get</code> (Level 2). This keeps keys out of the agent's context window.</span>
+          <span data-lang="zh">AI Agent 使用建议：始终使用 <code>apikey run</code>（Level 1）而非 <code>apikey get</code>（Level 2）。这样密钥不会进入 Agent 的上下文窗口。</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Commands -->
+    <div class="content-card" id="commands">
+      <h2>
+        <span data-lang="en">Commands</span>
+        <span data-lang="zh">命令参考</span>
+      </h2>
+
+      <h3>
+        <span data-lang="en">Level 0 — Metadata (Safe)</span>
+        <span data-lang="zh">Level 0 — 元数据（安全）</span>
+      </h3>
+      <table class="cmd-table">
+        <thead>
+          <tr>
+            <th><span data-lang="en">Command</span><span data-lang="zh">命令</span></th>
+            <th><span data-lang="en">Description</span><span data-lang="zh">说明</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>list</td>
+            <td><span data-lang="en">List all keys with metadata (no values)</span><span data-lang="zh">列出所有密钥元数据（不含密钥值）</span></td>
+          </tr>
+          <tr>
+            <td>search &lt;keyword&gt;</td>
+            <td><span data-lang="en">Search keys by name, provider, ENV</span><span data-lang="zh">按名称、供应商、ENV 搜索密钥</span></td>
+          </tr>
+          <tr>
+            <td>info &lt;query&gt;</td>
+            <td><span data-lang="en">Show full metadata for a key</span><span data-lang="zh">显示密钥完整元数据</span></td>
+          </tr>
+          <tr>
+            <td>status</td>
+            <td><span data-lang="en">Show summary: key counts, providers, health</span><span data-lang="zh">显示概览：密钥数量、供应商、健康状态</span></td>
+          </tr>
+          <tr>
+            <td>doctor</td>
+            <td><span data-lang="en">Check key health status</span><span data-lang="zh">检查密钥健康状态</span></td>
+          </tr>
+          <tr>
+            <td>config</td>
+            <td><span data-lang="en">Show CLI configuration</span><span data-lang="zh">显示 CLI 配置</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>
+        <span data-lang="en">Level 1 — ENV Injection (Recommended for Agents)</span>
+        <span data-lang="zh">Level 1 — 环境变量注入（Agent 推荐）</span>
+      </h3>
+      <table class="cmd-table">
+        <tbody>
+          <tr>
+            <td>run -- &lt;cmd&gt;</td>
+            <td><span data-lang="en">Run command with keys as env vars</span><span data-lang="zh">以环境变量方式注入密钥并执行命令</span></td>
+          </tr>
+          <tr>
+            <td>eval</td>
+            <td><span data-lang="en">Output export statements for shell eval</span><span data-lang="zh">输出 export 语句供 shell eval 使用</span></td>
+          </tr>
+          <tr>
+            <td>init</td>
+            <td><span data-lang="en">Generate .env file from keys</span><span data-lang="zh">从密钥生成 .env 文件</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>
+        <span data-lang="en">Level 2 — Plaintext (Use with Caution)</span>
+        <span data-lang="zh">Level 2 — 明文（谨慎使用）</span>
+      </h3>
+      <table class="cmd-table">
+        <tbody>
+          <tr>
+            <td>get &lt;query&gt;</td>
+            <td><span data-lang="en">Get key value (masked by default, --unsafe-show-key for plaintext)</span><span data-lang="zh">获取密钥值（默认脱敏，--unsafe-show-key 获取明文）</span></td>
+          </tr>
+          <tr>
+            <td>export</td>
+            <td><span data-lang="en">Export keys (--unsafe-include-values for plaintext)</span><span data-lang="zh">导出密钥（--unsafe-include-values 导出明文）</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>
+        <span data-lang="en">Agent & Utility</span>
+        <span data-lang="zh">Agent 与工具</span>
+      </h3>
+      <table class="cmd-table">
+        <tbody>
+          <tr>
+            <td>skills</td>
+            <td><span data-lang="en">Generate agent capability docs (Cursor rules / Markdown / JSON)</span><span data-lang="zh">生成 Agent 能力文档（Cursor rules / Markdown / JSON）</span></td>
+          </tr>
+          <tr>
+            <td>completion</td>
+            <td><span data-lang="en">Generate shell completion (bash/zsh/fish)</span><span data-lang="zh">生成 shell 补全脚本（bash/zsh/fish）</span></td>
+          </tr>
+          <tr>
+            <td>version</td>
+            <td><span data-lang="en">Show version</span><span data-lang="zh">显示版本</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Agent Integration -->
+    <div class="content-card" id="agent">
+      <h2>
+        <span data-lang="en">Agent Integration</span>
+        <span data-lang="zh">Agent 集成</span>
+      </h2>
+
+      <h3>Cursor</h3>
+      <p>
+        <span data-lang="en">Generate a Cursor rules file so your AI assistant knows about your available keys:</span>
+        <span data-lang="zh">生成 Cursor rules 文件，让你的 AI 助手了解可用密钥：</span>
+      </p>
+      <div class="code-block"><code><span class="cmd">apikey</span> skills <span class="flag">--format</span> <span class="arg">cursor</span></code></div>
+      <p>
+        <span data-lang="en">This creates <code>.cursor/rules/apikey.mdc</code> in your project.</span>
+        <span data-lang="zh">这会在项目中创建 <code>.cursor/rules/apikey.mdc</code> 文件。</span>
+      </p>
+
+      <h3>
+        <span data-lang="en">Output Format</span>
+        <span data-lang="zh">输出格式</span>
+      </h3>
+      <ul>
+        <li>
+          <span data-lang="en"><strong>Terminal (TTY):</strong> Human-readable table format</span>
+          <span data-lang="zh"><strong>终端（TTY）：</strong>人类可读的表格格式</span>
+        </li>
+        <li>
+          <span data-lang="en"><strong>Pipe / Agent (non-TTY):</strong> JSON format — auto-detected</span>
+          <span data-lang="zh"><strong>管道 / Agent（非 TTY）：</strong>JSON 格式 — 自动检测</span>
+        </li>
+        <li>
+          <span data-lang="en">Override with <code>--format json</code> or <code>--format table</code></span>
+          <span data-lang="zh">使用 <code>--format json</code> 或 <code>--format table</code> 覆盖默认行为</span>
+        </li>
+      </ul>
+
+      <h3>
+        <span data-lang="en">Typical Agent Workflow</span>
+        <span data-lang="zh">典型 Agent 工作流</span>
+      </h3>
+      <div class="code-block"><code><span class="comment"># 1. Agent discovers available keys</span>
+<span class="cmd">apikey</span> list <span class="flag">--format</span> <span class="arg">json</span>
+
+<span class="comment"># 2. Agent runs code with keys injected</span>
+<span class="cmd">apikey</span> run <span class="flag">--provider</span> <span class="arg">openai</span> <span class="flag">--</span> python my_script.py
+
+<span class="comment"># 3. Keys are in env vars, never in agent context</span></code></div>
+    </div>
+
+    <!-- Architecture -->
+    <div class="content-card" id="architecture">
+      <h2>
+        <span data-lang="en">Architecture</span>
+        <span data-lang="zh">架构</span>
+      </h2>
+      <div class="code-block"><code><span class="comment">apikey App (Swift)  ──writes──>  SQLite DB + macOS Keychain</span>
+                                          │
+<span class="comment">apikey-cli (Go)     ──reads────────────────┘</span></code></div>
+      <ul>
+        <li>
+          <span data-lang="en"><strong>App</strong> manages keys: create, edit, delete, health check, backup</span>
+          <span data-lang="zh"><strong>App</strong> 管理密钥：创建、编辑、删除、健康检查、备份</span>
+        </li>
+        <li>
+          <span data-lang="en"><strong>CLI</strong> provides read access for agents and terminal workflows</span>
+          <span data-lang="zh"><strong>CLI</strong> 为 Agent 和终端工作流提供只读访问</span>
+        </li>
+        <li>
+          <span data-lang="en">Both share the same database and Keychain entries</span>
+          <span data-lang="zh">两者共享同一数据库和 Keychain 条目</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Source -->
+    <div class="content-card" id="source" style="text-align: center;">
+      <h2>
+        <span data-lang="en">Open Source</span>
+        <span data-lang="zh">开源</span>
+      </h2>
+      <p>
+        <span data-lang="en">apikey-cli is open source. View the code, report issues, or contribute on GitHub.</span>
+        <span data-lang="zh">apikey-cli 是开源项目。在 GitHub 上查看代码、报告问题或参与贡献。</span>
+      </p>
+      <p style="margin-top: 20px;">
+        <a href="https://github.com/Coldplay-now/apikey-cli" style="color: var(--orange); font-weight: 700; font-size: 16px;">github.com/Coldplay-now/apikey-cli</a>
+      </p>
+    </div>
+
+    <p class="meta">&copy; 2026 XT. All rights reserved.</p>
+
+  </div>
+
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-links">
+      <a href="./"><span data-lang="en">Home</span><span data-lang="zh">首页</span></a>
+      <a href="cli.html"><span data-lang="en">CLI</span><span data-lang="zh">CLI</span></a>
+      <a href="help.html"><span data-lang="en">Help</span><span data-lang="zh">帮助</span></a>
+      <a href="privacy.html"><span data-lang="en">Privacy</span><span data-lang="zh">隐私政策</span></a>
+    </div>
+    <p>apikey-cli v1.0.0 &copy; 2026 XT &nbsp;&middot;&nbsp; Made with ♥ on macOS</p>
+  </div>
+</footer>
+
+<script>
+  function toggleLang() {
+    const html = document.documentElement;
+    const current = html.getAttribute('lang');
+    const next = current === 'zh' ? 'en' : 'zh';
+    html.setAttribute('lang', next);
+    document.getElementById('langLabel').textContent = next === 'en' ? 'EN / 中' : '中 / EN';
+    localStorage.setItem('apikey-lang', next);
+  }
+  (function() {
+    const saved = localStorage.getItem('apikey-lang');
+    if (saved && saved === 'zh') {
+      document.documentElement.setAttribute('lang', 'zh');
+      document.getElementById('langLabel').textContent = '中 / EN';
+    }
+  })();
+  function copyInstall(el) {
+    const text = 'curl -fsSL https://raw.githubusercontent.com/Coldplay-now/apikey-cli/main/scripts/install.sh | bash';
+    navigator.clipboard.writeText(text).then(() => {
+      const copied = el.querySelector('.install-copied');
+      copied.classList.add('show');
+      setTimeout(() => copied.classList.remove('show'), 1500);
+    });
+  }
+</script>
+
+</body>
+</html>
