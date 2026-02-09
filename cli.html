@@ -412,7 +412,7 @@
   <div class="hero-install">
     <div class="install-box" onclick="copyInstall(this)">
       <span class="prompt">$</span>
-      <span>curl -fsSL https://raw.githubusercontent.com/Coldplay-now/apikey-cli/main/scripts/install.sh | bash</span>
+      <span>curl -fsSL https://coldplay-now.github.io/apikey-website/downloads/apikey-cli-v1.0.0-darwin-universal.tar.gz | tar xz &amp;&amp; sudo mv apikey /usr/local/bin/</span>
       <span class="copy-hint">
         <span data-lang="en">click to copy</span>
         <span data-lang="zh">点击复制</span>
@@ -460,7 +460,7 @@
         <span data-lang="en">Option 1: One-Line Install</span>
         <span data-lang="zh">方式一：一键安装</span>
       </h3>
-      <div class="code-block"><code><span class="cmd">curl</span> <span class="flag">-fsSL</span> https://raw.githubusercontent.com/Coldplay-now/apikey-cli/main/scripts/install.sh | <span class="cmd">bash</span></code></div>
+      <div class="code-block"><code><span class="cmd">curl</span> <span class="flag">-fsSL</span> https://coldplay-now.github.io/apikey-website/downloads/apikey-cli-v1.0.0-darwin-universal.tar.gz | <span class="cmd">tar</span> xz &amp;&amp; <span class="cmd">sudo mv</span> apikey /usr/local/bin/</code></div>
 
       <h3>
         <span data-lang="en">Option 2: Manual Download</span>
@@ -730,21 +730,6 @@
       </ul>
     </div>
 
-    <!-- Source -->
-    <div class="content-card" id="source" style="text-align: center;">
-      <h2>
-        <span data-lang="en">Open Source</span>
-        <span data-lang="zh">开源</span>
-      </h2>
-      <p>
-        <span data-lang="en">apikey-cli is open source. View the code, report issues, or contribute on GitHub.</span>
-        <span data-lang="zh">apikey-cli 是开源项目。在 GitHub 上查看代码、报告问题或参与贡献。</span>
-      </p>
-      <p style="margin-top: 20px;">
-        <a href="https://github.com/Coldplay-now/apikey-cli" style="color: var(--orange); font-weight: 700; font-size: 16px;">github.com/Coldplay-now/apikey-cli</a>
-      </p>
-    </div>
-
     <p class="meta">&copy; 2026 XT. All rights reserved.</p>
 
   </div>
@@ -780,7 +765,7 @@
     }
   })();
   function copyInstall(el) {
-    const text = 'curl -fsSL https://raw.githubusercontent.com/Coldplay-now/apikey-cli/main/scripts/install.sh | bash';
+    const text = 'curl -fsSL https://coldplay-now.github.io/apikey-website/downloads/apikey-cli-v1.0.0-darwin-universal.tar.gz | tar xz && sudo mv apikey /usr/local/bin/';
     navigator.clipboard.writeText(text).then(() => {
       const copied = el.querySelector('.install-copied');
       copied.classList.add('show');
