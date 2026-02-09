@@ -265,7 +265,7 @@
     }
     .showcase-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       gap: 20px;
     }
     .showcase-grid .showcase-item {
@@ -614,6 +614,7 @@
       .showcase-grid { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 640px) {
+      .showcase-grid { grid-template-columns: 1fr; }
       .hero h1 { font-size: 40px; letter-spacing: -2px; }
       .hero .subtitle { font-size: 17px; }
       .features-grid, .security-grid { grid-template-columns: 1fr; }
@@ -710,6 +711,13 @@
         <div class="showcase-caption">
           <span data-lang="en">Menu Bar</span><span data-lang="zh">菜单栏</span>
           <span><span data-lang="en">One-click copy from menu bar</span><span data-lang="zh">菜单栏一键复制</span></span>
+        </div>
+      </div>
+      <div class="showcase-item">
+        <img src="assets/20260209-084546.jpg" alt="apikey settings panel">
+        <div class="showcase-caption">
+          <span data-lang="en">Settings</span><span data-lang="zh">设置</span>
+          <span><span data-lang="en">Language, security & shortcuts</span><span data-lang="zh">语言、安全与快捷键配置</span></span>
         </div>
       </div>
     </div>
