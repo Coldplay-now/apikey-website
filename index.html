@@ -245,63 +245,123 @@
       color: var(--text-muted);
     }
 
-    /* ── Screenshot showcase ── */
+    /* ── Carousel showcase ── */
     .showcase {
       padding: 40px 0 100px;
     }
-    .showcase-hero {
-      margin-bottom: 24px;
-    }
-    .showcase-hero img {
-      width: 100%;
-      border-radius: var(--radius);
-      border: 1px solid var(--border);
-      box-shadow: 0 24px 80px rgba(0,0,0,0.6);
-      transition: transform 0.3s, box-shadow 0.3s;
-    }
-    .showcase-hero img:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 32px 100px rgba(0,0,0,0.7), 0 0 60px var(--glow-orange);
-    }
-    .showcase-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-    }
-    .showcase-grid .showcase-item {
+    .carousel {
       position: relative;
-      overflow: hidden;
+      width: 100%;
+      aspect-ratio: 16 / 10;
       border-radius: var(--radius);
       border: 1px solid var(--border);
-      box-shadow: 0 16px 48px rgba(0,0,0,0.5);
-      transition: transform 0.3s, box-shadow 0.3s;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+      background: #0a0a0a;
     }
-    .showcase-grid .showcase-item:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 24px 64px rgba(0,0,0,0.6), 0 0 40px var(--glow-orange);
+    .carousel-slide {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
-    .showcase-grid .showcase-item img {
+    .carousel-slide.active {
+      opacity: 1;
+      z-index: 2;
+    }
+    .carousel-slide img {
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: contain;
       display: block;
     }
-    .showcase-caption {
+    .carousel-overlay {
       position: absolute;
       bottom: 0;
       left: 0;
       right: 0;
-      padding: 16px 20px;
-      background: linear-gradient(transparent, rgba(0,0,0,0.85));
-      font-size: 13px;
-      font-weight: 600;
-      color: white;
+      padding: 32px 36px 28px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.88) 50%);
+      z-index: 3;
     }
-    .showcase-caption span {
-      display: block;
-      font-size: 11px;
-      font-weight: 400;
+    .carousel-overlay .overlay-title {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .carousel-overlay .overlay-desc {
+      font-size: 14px;
       color: var(--text-secondary);
-      margin-top: 2px;
+      line-height: 1.6;
+      max-width: 520px;
+    }
+    .carousel-overlay .overlay-badge {
+      display: inline-block;
+      padding: 3px 12px;
+      border-radius: 100px;
+      background: rgba(249,115,22,0.15);
+      border: 1px solid rgba(249,115,22,0.25);
+      color: var(--orange);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+    /* Nav arrows */
+    .carousel-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 5;
+      transition: all 0.2s;
+      backdrop-filter: blur(8px);
+      user-select: none;
+    }
+    .carousel-nav:hover {
+      background: rgba(249,115,22,0.3);
+      border-color: var(--orange);
+    }
+    .carousel-prev { left: 16px; }
+    .carousel-next { right: 16px; }
+    /* Dots */
+    .carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .carousel-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s;
+      padding: 0;
+    }
+    .carousel-dot.active {
+      background: var(--orange);
+      box-shadow: 0 0 8px var(--orange);
+      width: 24px;
+      border-radius: 4px;
     }
 
     /* ── Section headers ── */
@@ -797,40 +857,65 @@
     </div>
   </section>
 
-  <!-- Screenshots -->
+  <!-- Screenshots Carousel -->
   <section class="showcase">
-    <div class="showcase-hero">
-      <img src="assets/截屏2026-02-08 22.29.57.png" alt="apikey dashboard — three-column layout with sidebar, key list, and detail panel">
-    </div>
-    <div class="showcase-grid">
-      <div class="showcase-item">
+    <div class="carousel" id="carousel">
+      <!-- Slide 1: Dashboard -->
+      <div class="carousel-slide active">
+        <img src="assets/截屏2026-02-08 22.29.57.png" alt="apikey dashboard">
+        <div class="carousel-overlay">
+          <div class="overlay-badge"><span data-lang="en">Dashboard</span><span data-lang="zh">仪表盘</span></div>
+          <div class="overlay-title"><span data-lang="en">Three-Column Layout</span><span data-lang="zh">三栏布局</span></div>
+          <div class="overlay-desc"><span data-lang="en">Sidebar → Key list → Detail panel. Browse by type or provider, view full metadata at a glance.</span><span data-lang="zh">侧边栏 → 密钥列表 → 详情面板。按类型或供应商浏览，完整元数据一目了然。</span></div>
+        </div>
+      </div>
+      <!-- Slide 2: Type Selection -->
+      <div class="carousel-slide">
         <img src="assets/20260208-223108.jpg" alt="8 key type selection">
-        <div class="showcase-caption">
-          <span data-lang="en">Type Selection</span><span data-lang="zh">类型选择</span>
-          <span><span data-lang="en">8 key types at a glance</span><span data-lang="zh">8 种密钥类型，一目了然</span></span>
+        <div class="carousel-overlay">
+          <div class="overlay-badge"><span data-lang="en">Key Types</span><span data-lang="zh">密钥类型</span></div>
+          <div class="overlay-title"><span data-lang="en">8 Types, Every Scenario Covered</span><span data-lang="zh">8 种类型，覆盖所有场景</span></div>
+          <div class="overlay-desc"><span data-lang="en">LLM, Code PAT, SaaS, SSH, Email SMTP, Cloud, Payment, Generic — select to auto-configure fields and ENV names.</span><span data-lang="zh">LLM、代码 PAT、SaaS、SSH、邮件 SMTP、云服务、支付、通用 — 选择后自动配置字段和 ENV 名称。</span></div>
         </div>
       </div>
-      <div class="showcase-item">
+      <!-- Slide 3: Smart Form -->
+      <div class="carousel-slide">
         <img src="assets/20260208-223112.jpg" alt="floating label form">
-        <div class="showcase-caption">
-          <span data-lang="en">Smart Form</span><span data-lang="zh">智能表单</span>
-          <span><span data-lang="en">Floating labels + type-specific fields</span><span data-lang="zh">浮动标签 + 类型专属字段</span></span>
+        <div class="carousel-overlay">
+          <div class="overlay-badge"><span data-lang="en">Smart Form</span><span data-lang="zh">智能表单</span></div>
+          <div class="overlay-title"><span data-lang="en">Paste to Auto-Detect, Zero Manual Config</span><span data-lang="zh">粘贴自动识别，零配置</span></div>
+          <div class="overlay-desc"><span data-lang="en">Paste a key to auto-match provider (sk- → OpenAI). Floating labels, type-specific fields, provider presets.</span><span data-lang="zh">粘贴密钥自动匹配供应商（sk- → OpenAI）。浮动标签、类型专属字段、供应商预设。</span></div>
         </div>
       </div>
-      <div class="showcase-item">
+      <!-- Slide 4: Menu Bar -->
+      <div class="carousel-slide">
         <img src="assets/20260208-223101.jpg" alt="menu bar quick access">
-        <div class="showcase-caption">
-          <span data-lang="en">Menu Bar</span><span data-lang="zh">菜单栏</span>
-          <span><span data-lang="en">One-click copy from menu bar</span><span data-lang="zh">菜单栏一键复制</span></span>
+        <div class="carousel-overlay">
+          <div class="overlay-badge"><span data-lang="en">Menu Bar</span><span data-lang="zh">菜单栏</span></div>
+          <div class="overlay-title"><span data-lang="en">One-Click Copy, Stay in Flow</span><span data-lang="zh">一键复制，心流不断</span></div>
+          <div class="overlay-desc"><span data-lang="en">Copy recently used keys from the menu bar tray. Lock/unlock, clipboard countdown — no need to open the main window.</span><span data-lang="zh">菜单栏托盘复制最近使用的密钥。锁定/解锁、剪贴板倒计时 — 无需打开主窗口。</span></div>
         </div>
       </div>
-      <div class="showcase-item">
+      <!-- Slide 5: Settings -->
+      <div class="carousel-slide">
         <img src="assets/20260209-084546.jpg" alt="apikey settings panel">
-        <div class="showcase-caption">
-          <span data-lang="en">Settings</span><span data-lang="zh">设置</span>
-          <span><span data-lang="en">Language, security & shortcuts</span><span data-lang="zh">语言、安全与快捷键配置</span></span>
+        <div class="carousel-overlay">
+          <div class="overlay-badge"><span data-lang="en">Settings</span><span data-lang="zh">设置</span></div>
+          <div class="overlay-title"><span data-lang="en">Fine-Tuned Security & Preferences</span><span data-lang="zh">精细化安全与偏好配置</span></div>
+          <div class="overlay-desc"><span data-lang="en">Clipboard timeout, auto-lock interval, language switch, global hotkey — all in one place.</span><span data-lang="zh">剪贴板超时、自动锁定间隔、语言切换、全局快捷键 — 集中配置。</span></div>
         </div>
       </div>
+      <!-- Nav arrows -->
+      <button class="carousel-nav carousel-prev" onclick="carouselPrev()" aria-label="Previous">‹</button>
+      <button class="carousel-nav carousel-next" onclick="carouselNext()" aria-label="Next">›</button>
+    </div>
+    <!-- Dots -->
+    <div class="carousel-dots" id="carouselDots">
+      <button class="carousel-dot active" onclick="carouselGo(0)"></button>
+      <button class="carousel-dot" onclick="carouselGo(1)"></button>
+      <button class="carousel-dot" onclick="carouselGo(2)"></button>
+      <button class="carousel-dot" onclick="carouselGo(3)"></button>
+      <button class="carousel-dot" onclick="carouselGo(4)"></button>
     </div>
   </section>
 
@@ -1223,6 +1308,35 @@ github PAT        GitHub      CODE    GITHUB_TOKEN</span>
       document.documentElement.setAttribute('lang', 'zh');
       document.getElementById('langLabel').textContent = '中 / EN';
     }
+  })();
+
+  // Carousel
+  (function() {
+    let current = 0;
+    const slides = document.querySelectorAll('.carousel-slide');
+    const dots = document.querySelectorAll('.carousel-dot');
+    const total = slides.length;
+    let timer = null;
+
+    function go(idx) {
+      slides[current].classList.remove('active');
+      dots[current].classList.remove('active');
+      current = (idx + total) % total;
+      slides[current].classList.add('active');
+      dots[current].classList.add('active');
+      resetTimer();
+    }
+
+    function resetTimer() {
+      if (timer) clearInterval(timer);
+      timer = setInterval(function() { go(current + 1); }, 5000);
+    }
+
+    window.carouselNext = function() { go(current + 1); };
+    window.carouselPrev = function() { go(current - 1); };
+    window.carouselGo = function(idx) { go(idx); };
+
+    resetTimer();
   })();
 </script>
 
