@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>apikey — Privacy Policy</title>
+  <meta name="description" content="apikey Privacy Policy — We collect zero data. Your keys never leave your Mac.">
+  <link rel="icon" href="assets/app-icon.png" type="image/png">
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --card: rgba(255,255,255,0.03);
+      --border: rgba(255,255,255,0.08);
+      --border-subtle: rgba(255,255,255,0.05);
+      --text: #f0f0f0;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --orange: #f97316;
+      --gradient: linear-gradient(135deg, #f97316, #fb7185);
+      --gradient-subtle: linear-gradient(135deg, rgba(249,115,22,0.15), rgba(251,113,133,0.15));
+      --glow-orange: rgba(249,115,22,0.12);
+      --glow-coral: rgba(251,113,133,0.08);
+      --radius: 20px;
+      --radius-sm: 12px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html:not([lang="zh"]) [data-lang="zh"] { display: none; }
+    html[lang="zh"] [data-lang="en"] { display: none; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.8;
+      overflow-x: hidden;
+    }
+    .glow-top {
+      position: fixed; top: -300px; left: -200px;
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, var(--glow-orange), transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+    .container {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 32px;
+      position: relative;
+      z-index: 1;
+    }
+    nav {
+      padding: 24px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none; color: var(--text);
+    }
+    .nav-brand img { width: 36px; height: 36px; border-radius: 10px; }
+    .nav-brand span { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
+    .nav-links { display: flex; gap: 20px; align-items: center; }
+    .nav-links a {
+      color: var(--text-secondary); text-decoration: none;
+      font-size: 14px; font-weight: 500; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .lang-toggle {
+      display: inline-flex; align-items: center; gap: 4px;
+      padding: 6px 14px; border-radius: 100px;
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--text-secondary); font-size: 12px; font-weight: 600;
+      cursor: pointer; transition: all 0.2s; backdrop-filter: blur(12px);
+      user-select: none;
+    }
+    .lang-toggle:hover { border-color: var(--orange); color: var(--text); }
+
+    .page-header {
+      text-align: center;
+      padding: 80px 0 48px;
+    }
+    .page-header h1 {
+      font-size: 42px; font-weight: 800; letter-spacing: -2px; margin-bottom: 16px;
+    }
+    .page-header h1 .gradient-text {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .page-header p {
+      color: var(--text-secondary); font-size: 17px;
+    }
+
+    .content {
+      padding: 0 0 100px;
+    }
+    .content-card {
+      background: var(--card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius);
+      padding: 48px 40px;
+      backdrop-filter: blur(12px);
+      margin-bottom: 24px;
+    }
+    .content-card h2 {
+      font-size: 22px; font-weight: 700; margin-bottom: 20px;
+      letter-spacing: -0.5px;
+    }
+    .content-card h3 {
+      font-size: 17px; font-weight: 700; margin: 24px 0 12px;
+      color: var(--orange);
+    }
+    .content-card p, .content-card li {
+      font-size: 15px; color: var(--text-secondary); line-height: 1.8;
+      margin-bottom: 12px;
+    }
+    .content-card ul {
+      padding-left: 20px;
+    }
+    .content-card li {
+      margin-bottom: 8px;
+    }
+    .highlight-box {
+      background: var(--gradient-subtle);
+      border: 1px solid rgba(249,115,22,0.2);
+      border-radius: var(--radius-sm);
+      padding: 20px 24px;
+      margin: 20px 0;
+    }
+    .highlight-box p {
+      color: var(--text); font-weight: 600; margin-bottom: 0;
+    }
+    .meta {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      padding: 24px 0;
+    }
+
+    footer {
+      border-top: 1px solid var(--border-subtle);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+    footer a { color: var(--orange); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+    .footer-links {
+      display: flex; gap: 24px; justify-content: center; margin-bottom: 16px;
+    }
+    .footer-links a { color: var(--text-secondary); font-size: 13px; }
+
+    @media (max-width: 640px) {
+      .page-header h1 { font-size: 32px; }
+      .content-card { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="glow-top"></div>
+
+<div class="container">
+
+  <nav>
+    <a href="/" class="nav-brand">
+      <img src="assets/app-icon.png" alt="apikey">
+      <span>apikey</span>
+    </a>
+    <div class="nav-links">
+      <a href="/"><span data-lang="en">Home</span><span data-lang="zh">首页</span></a>
+      <button class="lang-toggle" onclick="toggleLang()">
+        <span id="langLabel">EN / 中</span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="page-header">
+    <h1>
+      <span data-lang="en"><span class="gradient-text">Privacy Policy</span></span>
+      <span data-lang="zh"><span class="gradient-text">隐私政策</span></span>
+    </h1>
+    <p>
+      <span data-lang="en">Last updated: February 9, 2026</span>
+      <span data-lang="zh">最后更新：2026 年 2 月 9 日</span>
+    </p>
+  </div>
+
+  <div class="content">
+
+    <!-- TL;DR -->
+    <div class="content-card">
+      <h2><span data-lang="en">TL;DR</span><span data-lang="zh">简而言之</span></h2>
+      <div class="highlight-box">
+        <p>
+          <span data-lang="en">apikey collects zero data. We have no server, no account system, no analytics, and no telemetry. Your API keys are encrypted in the macOS Keychain and never leave your Mac. Period.</span>
+          <span data-lang="zh">apikey 不收集任何数据。我们没有服务器、没有账号系统、没有分析工具、没有遥测。你的 API 密钥通过 macOS 钥匙串加密，永远不会离开你的 Mac。就这样。</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Data Collection -->
+    <div class="content-card">
+      <h2><span data-lang="en">Data Collection</span><span data-lang="zh">数据收集</span></h2>
+      <p>
+        <span data-lang="en">apikey does <strong>not</strong> collect, store, transmit, or share any personal data, usage data, or any other information whatsoever. This includes but is not limited to:</span>
+        <span data-lang="zh">apikey <strong>不会</strong>收集、存储、传输或共享任何个人数据、使用数据或任何其他信息。包括但不限于：</span>
+      </p>
+      <ul>
+        <li><span data-lang="en">Personal information (name, email, IP address, device identifiers)</span><span data-lang="zh">个人信息（姓名、邮箱、IP 地址、设备标识符）</span></li>
+        <li><span data-lang="en">Usage analytics or behavioral data</span><span data-lang="zh">使用分析或行为数据</span></li>
+        <li><span data-lang="en">Crash reports or diagnostics</span><span data-lang="zh">崩溃报告或诊断数据</span></li>
+        <li><span data-lang="en">API keys or secrets you store in the app</span><span data-lang="zh">你在应用中存储的 API 密钥或密钥值</span></li>
+        <li><span data-lang="en">Any metadata about your keys, providers, or usage patterns</span><span data-lang="zh">有关你的密钥、供应商或使用模式的任何元数据</span></li>
+      </ul>
+    </div>
+
+    <!-- Network -->
+    <div class="content-card">
+      <h2><span data-lang="en">Network Communication</span><span data-lang="zh">网络通信</span></h2>
+      <p>
+        <span data-lang="en">apikey is a <strong>purely local application</strong>. It contains no networking code and makes no HTTP requests, WebSocket connections, or any other form of network communication. The app functions entirely offline.</span>
+        <span data-lang="zh">apikey 是一款<strong>纯本地应用</strong>。它不包含任何网络代码，不发起 HTTP 请求、WebSocket 连接或任何其他形式的网络通信。该应用完全离线运行。</span>
+      </p>
+      <p>
+        <span data-lang="en">The only exception is the optional <strong>Key Health Check</strong> feature, which — when manually triggered by the user — sends a minimal validation request to the respective API provider (e.g., OpenAI) to verify if a key is still active. This request is sent directly to the provider's API endpoint and does not pass through any of our servers.</span>
+        <span data-lang="zh">唯一的例外是可选的<strong>密钥健康检查</strong>功能，该功能在用户手动触发时，会向相应的 API 供应商（如 OpenAI）发送一个最小化的验证请求，以确认密钥是否仍然有效。该请求直接发送到供应商的 API 端点，不经过我们的任何服务器。</span>
+      </p>
+    </div>
+
+    <!-- Data Storage -->
+    <div class="content-card">
+      <h2><span data-lang="en">Data Storage</span><span data-lang="zh">数据存储</span></h2>
+
+      <h3><span data-lang="en">API Key Values</span><span data-lang="zh">API 密钥值</span></h3>
+      <p>
+        <span data-lang="en">All sensitive key values are stored exclusively in the <strong>macOS Keychain</strong>, which provides hardware-backed encryption at the operating system level. Key values are never written to disk in plain text.</span>
+        <span data-lang="zh">所有敏感密钥值仅存储在 <strong>macOS 钥匙串</strong>中，该钥匙串在操作系统层面提供硬件级加密。密钥值永远不会以明文形式写入磁盘。</span>
+      </p>
+
+      <h3><span data-lang="en">Metadata</span><span data-lang="zh">元数据</span></h3>
+      <p>
+        <span data-lang="en">Non-sensitive metadata (key names, provider names, timestamps, key types) is stored in a local SQLite database on your Mac. This data never leaves your device.</span>
+        <span data-lang="zh">非敏感元数据（密钥名称、供应商名称、时间戳、密钥类型）存储在你 Mac 上的本地 SQLite 数据库中。这些数据永远不会离开你的设备。</span>
+      </p>
+
+      <h3><span data-lang="en">Clipboard</span><span data-lang="zh">剪贴板</span></h3>
+      <p>
+        <span data-lang="en">When you copy a key, it is placed on the system clipboard and automatically cleared after a configurable timeout (15–120 seconds). When the app locks, all in-memory key caches are immediately wiped.</span>
+        <span data-lang="zh">当你复制密钥时，它会被放入系统剪贴板，并在可配置的超时时间（15~120 秒）后自动清除。当应用锁定时，所有内存中的密钥缓存会立即清空。</span>
+      </p>
+    </div>
+
+    <!-- Third Party -->
+    <div class="content-card">
+      <h2><span data-lang="en">Third-Party Services</span><span data-lang="zh">第三方服务</span></h2>
+      <p>
+        <span data-lang="en">apikey does <strong>not</strong> include any third-party SDKs, analytics frameworks, advertising libraries, or tracking tools. There are no third parties involved in the operation of this app.</span>
+        <span data-lang="zh">apikey <strong>不包含</strong>任何第三方 SDK、分析框架、广告库或跟踪工具。该应用的运行不涉及任何第三方。</span>
+      </p>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="content-card">
+      <h2><span data-lang="en">Disclaimer</span><span data-lang="zh">免责声明</span></h2>
+      <p>
+        <span data-lang="en">apikey leverages the macOS Keychain for secure storage. While we employ best practices to protect your data, we cannot be held responsible for:</span>
+        <span data-lang="zh">apikey 利用 macOS 钥匙串进行安全存储。虽然我们采用最佳实践来保护你的数据，但我们不对以下情况承担责任：</span>
+      </p>
+      <ul>
+        <li><span data-lang="en">Loss of API keys due to system failures, hardware damage, or user error</span><span data-lang="zh">因系统故障、硬件损坏或用户操作失误导致的 API 密钥丢失</span></li>
+        <li><span data-lang="en">Unauthorized access resulting from compromised system security</span><span data-lang="zh">因系统安全受损而导致的未授权访问</span></li>
+        <li><span data-lang="en">Financial or operational losses caused by expired, revoked, or mismanaged keys</span><span data-lang="zh">因密钥过期、被撤销或管理不当造成的经济或运营损失</span></li>
+      </ul>
+      <p>
+        <span data-lang="en">Users are advised to maintain their own backups and practice good key management hygiene.</span>
+        <span data-lang="zh">建议用户自行维护备份并养成良好的密钥管理习惯。</span>
+      </p>
+    </div>
+
+    <!-- Changes -->
+    <div class="content-card">
+      <h2><span data-lang="en">Changes to This Policy</span><span data-lang="zh">政策变更</span></h2>
+      <p>
+        <span data-lang="en">If we ever update this privacy policy, changes will be posted on this page with an updated revision date. Given that we collect zero data, we do not anticipate significant changes.</span>
+        <span data-lang="zh">如果我们更新此隐私政策，更改将发布在此页面并更新修订日期。鉴于我们不收集任何数据，我们预计不会有重大变更。</span>
+      </p>
+    </div>
+
+    <!-- Contact -->
+    <div class="content-card">
+      <h2><span data-lang="en">Contact</span><span data-lang="zh">联系方式</span></h2>
+      <p>
+        <span data-lang="en">If you have any questions about this privacy policy, please contact:</span>
+        <span data-lang="zh">如果你对本隐私政策有任何疑问，请联系：</span>
+      </p>
+      <p><strong>Xiaotian LIU</strong><br>lxiaotian@gmail.com</p>
+    </div>
+
+    <p class="meta">© 2026 Xiaotian LIU. All rights reserved.</p>
+
+  </div>
+
+</div>
+
+<footer>
+  <div class="container">
+    <div class="footer-links">
+      <a href="/"><span data-lang="en">Home</span><span data-lang="zh">首页</span></a>
+      <a href="privacy.html"><span data-lang="en">Privacy</span><span data-lang="zh">隐私政策</span></a>
+    </div>
+    <p>apikey v0.2 &copy; 2026 Xiaotian LIU &nbsp;·&nbsp; Made with ♥ on macOS</p>
+  </div>
+</footer>
+
+<script>
+  function toggleLang() {
+    const html = document.documentElement;
+    const current = html.getAttribute('lang');
+    const next = current === 'zh' ? 'en' : 'zh';
+    html.setAttribute('lang', next);
+    document.getElementById('langLabel').textContent = next === 'en' ? 'EN / 中' : '中 / EN';
+    localStorage.setItem('apikey-lang', next);
+  }
+  (function() {
+    const saved = localStorage.getItem('apikey-lang');
+    if (saved && saved === 'zh') {
+      document.documentElement.setAttribute('lang', 'zh');
+      document.getElementById('langLabel').textContent = '中 / EN';
+    }
+  })();
+</script>
+
+</body>
+</html>
