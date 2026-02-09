@@ -606,17 +606,126 @@
       font-size: 13px;
     }
 
+    /* ── CLI section ── */
+    .cli-section { padding: 100px 0; }
+    .cli-card {
+      background: rgba(0,0,0,0.5);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      max-width: 680px;
+      margin: 0 auto 40px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.4);
+    }
+    .cli-window {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.04);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .cli-dots {
+      display: flex; gap: 6px;
+    }
+    .cli-dots span {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+    }
+    .cli-dots span:first-child { background: #ff5f57; }
+    .cli-dots span:nth-child(2) { background: #febc2e; }
+    .cli-dots span:last-child { background: #28c840; }
+    .cli-title {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      flex: 1;
+      text-align: center;
+      margin-right: 46px;
+    }
+    .cli-body {
+      padding: 24px 28px;
+      overflow-x: auto;
+    }
+    .cli-body code {
+      font-family: 'SF Mono', 'Menlo', 'Cascadia Code', monospace;
+      font-size: 13px;
+      line-height: 1.8;
+      display: block;
+      white-space: pre;
+      color: var(--text);
+    }
+    .cli-comment { color: var(--text-muted); }
+    .cli-prompt { color: var(--emerald); font-weight: 700; }
+    .cli-output { color: var(--text-secondary); }
+    .cli-features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .cli-feat {
+      text-align: center;
+      padding: 24px 16px;
+    }
+    .cli-feat-icon {
+      font-size: 28px;
+      margin-bottom: 12px;
+    }
+    .cli-feat h4 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .cli-feat p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ── CTA tags ── */
+    .cta-tags {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 28px;
+      position: relative;
+    }
+    .cta-tag {
+      display: inline-block;
+      padding: 5px 16px;
+      border-radius: 100px;
+      border: 1px solid rgba(249,115,22,0.3);
+      background: rgba(249,115,22,0.08);
+      color: var(--orange);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .cta-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      position: relative;
+    }
+
     /* ── Responsive ── */
     @media (max-width: 900px) {
       .features-grid, .security-grid { grid-template-columns: 1fr 1fr; }
       .steps { grid-template-columns: 1fr 1fr; }
+      .cli-features { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 640px) {
       .hero h1 { font-size: 40px; letter-spacing: -2px; }
       .hero .subtitle { font-size: 17px; }
       .features-grid, .security-grid { grid-template-columns: 1fr; }
       .steps { grid-template-columns: 1fr; }
+      .cli-features { grid-template-columns: 1fr; }
       .hero-actions { flex-direction: column; align-items: center; }
+      .cta-actions { flex-direction: column; align-items: center; }
       .nav-links .nav-link-text { display: none; }
       .section-title { font-size: 32px; }
       .comparison-table { font-size: 12px; }
@@ -898,6 +1007,65 @@
     </div>
   </section>
 
+  <!-- CLI -->
+  <section class="cli-section" id="cli">
+    <div class="section-label">CLI</div>
+    <h2 class="section-title">
+      <span data-lang="en">Built for AI agents</span>
+      <span data-lang="zh">为 AI Agent 而生</span>
+    </h2>
+    <p class="section-desc">
+      <span data-lang="en">apikey-cli lets agents and terminals access your keys securely — keys are injected via ENV, never exposed in conversation.</span>
+      <span data-lang="zh">apikey-cli 让 Agent 和终端安全访问密钥 — 通过环境变量注入，密钥永不暴露在对话中。</span>
+    </p>
+
+    <div class="cli-card">
+      <div class="cli-window">
+        <div class="cli-dots"><span></span><span></span><span></span></div>
+        <div class="cli-title">Terminal</div>
+      </div>
+      <div class="cli-body">
+        <code><span class="cli-comment"># Discover your keys</span>
+<span class="cli-prompt">$</span> apikey list
+<span class="cli-output">NAME              PROVIDER    TYPE    ENV
+Deepseek          Deepseek    LLM     OPENAI_API_KEY
+github PAT        GitHub      CODE    GITHUB_TOKEN</span>
+
+<span class="cli-comment"># Run with keys injected as env vars (keys never in stdout)</span>
+<span class="cli-prompt">$</span> apikey run --provider openai -- python main.py
+
+<span class="cli-comment"># Generate project rules for Cursor agent</span>
+<span class="cli-prompt">$</span> apikey rules
+<span class="cli-output">wrote: .cursor/rules/apikey.mdc (6 keys)</span></code>
+      </div>
+    </div>
+
+    <div class="cli-features">
+      <div class="cli-feat">
+        <div class="cli-feat-icon">🛡️</div>
+        <h4><span data-lang="en">3 Safety Levels</span><span data-lang="zh">3 级安全模型</span></h4>
+        <p><span data-lang="en">Metadata → ENV injection → Plaintext. Agents always use Level 1.</span><span data-lang="zh">元数据 → 环境变量注入 → 明文。Agent 始终使用 Level 1。</span></p>
+      </div>
+      <div class="cli-feat">
+        <div class="cli-feat-icon">🤖</div>
+        <h4><span data-lang="en">Agent-Ready</span><span data-lang="zh">Agent 就绪</span></h4>
+        <p><span data-lang="en">skills / commands / rules — three commands to fully integrate with Cursor.</span><span data-lang="zh">skills / commands / rules — 三个命令完成 Cursor 全面集成。</span></p>
+      </div>
+      <div class="cli-feat">
+        <div class="cli-feat-icon">⚡</div>
+        <h4><span data-lang="en">One-Line Install</span><span data-lang="zh">一键安装</span></h4>
+        <p><span data-lang="en">Universal binary, Apple Notarized, curl | bash and go.</span><span data-lang="zh">通用二进制，Apple 公证，curl | bash 即装即用。</span></p>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 36px;">
+      <a href="cli.html" class="btn btn-ghost">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+        <span data-lang="en">Learn more about CLI</span><span data-lang="zh">了解 CLI 详情</span>
+      </a>
+    </div>
+  </section>
+
   <!-- Comparison -->
   <section class="comparison" id="comparison">
     <div class="section-label">Compare</div>
@@ -995,18 +1163,30 @@
   <!-- CTA -->
   <section class="cta">
     <div class="cta-card">
+      <div class="cta-tags">
+        <span class="cta-tag"><span data-lang="en">AI Native</span><span data-lang="zh">AI 原生</span></span>
+        <span class="cta-tag"><span data-lang="en">macOS Native</span><span data-lang="zh">macOS 原生</span></span>
+        <span class="cta-tag"><span data-lang="en">Local Only</span><span data-lang="zh">纯本地</span></span>
+        <span class="cta-tag"><span data-lang="en">Zero Upload</span><span data-lang="zh">零上传</span></span>
+      </div>
       <h2>
-        <span data-lang="en">AI needs keys. You need control.<br>apikey gives you both.</span>
-        <span data-lang="zh">AI 需要密钥，你需要掌控。<br>apikey 两者兼得。</span>
+        <span data-lang="en">AI-native. macOS-native.<br>Secure, efficient API key management.</span>
+        <span data-lang="zh">AI 原生，macOS 原生。<br>安全高效管理 API Key。</span>
       </h2>
       <p>
-        <span data-lang="en">30+ AI &amp; cloud providers. Keychain-encrypted. Zero uploads. Your keys never leave your Mac.</span>
-        <span data-lang="zh">30+ AI 和云服务供应商。Keychain 加密。零上传。密钥永远不离开你的 Mac。</span>
+        <span data-lang="en">Purely local. No privacy risk. Zero uploads. Your keys never leave your Mac — not even one bit.</span>
+        <span data-lang="zh">纯本地运行，无隐私风险，零上传。密钥永远不离开你的 Mac — 一个字节都不会。</span>
       </p>
-      <a href="downloads/apikey-v0.2.5.dmg" class="btn btn-primary">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Download apikey v0.2.5
-      </a>
+      <div class="cta-actions">
+        <a href="downloads/apikey-v0.2.5.dmg" class="btn btn-primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span data-lang="en">Download for macOS</span><span data-lang="zh">下载 macOS 版</span>
+        </a>
+        <a href="cli.html" class="btn btn-ghost" style="position: relative;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+          <span data-lang="en">CLI for Agents</span><span data-lang="zh">Agent CLI 工具</span>
+        </a>
+      </div>
     </div>
   </section>
 
